@@ -1,20 +1,21 @@
 # Stage 1: Build Rust+PyO3 wheel with maturin
-FROM rust:1.77-bookworm AS builder
+FROM public.ecr.aws/lambda/python:3.12 AS python-base
 
-RUN apt-get update && apt-get install -y \
-    python3-dev \
-    python3-pip \
-    python3-venv \
-    && rm -rf /var/lib/apt/lists/*
+FROM rust:1.85-bookworm AS builder
 
-RUN python3 -m pip install --break-system-packages maturin
+# Copy Python 3.12 from Lambda base image
+COPY --from=python-base /var/lang /var/lang
+ENV PATH="/var/lang/bin:${PATH}"
+ENV LD_LIBRARY_PATH="/var/lang/lib:${LD_LIBRARY_PATH}"
+
+RUN pip3 install "maturin[patchelf]"
 
 WORKDIR /build
 COPY Cargo.toml Cargo.lock* ./
 COPY src/ src/
 
-# Build the PyO3 wheel for Linux x86_64
-RUN maturin build --release --interpreter python3 \
+# Build wheel targeting Python 3.12
+RUN maturin build --release --interpreter python3.12 \
     && ls -la target/wheels/
 
 # Stage 2: Lambda runtime with compiled Rust .so + Python handlers
