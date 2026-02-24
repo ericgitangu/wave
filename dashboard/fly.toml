@@ -1,5 +1,5 @@
 app = 'wave-apply-ericgitangu'
-primary_region = 'iad'
+primary_region = 'jnb'
 
 [build]
 

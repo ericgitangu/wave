@@ -5,6 +5,7 @@
 [![Rust](https://img.shields.io/badge/Rust-1.77+-orange.svg)](backend/)
 [![CDK](https://img.shields.io/badge/AWS_CDK-v2-yellow.svg)](infra/)
 [![Next.js](https://img.shields.io/badge/Next.js-16-black.svg)](dashboard/)
+[![Upstash Redis](https://img.shields.io/badge/Upstash-Redis-red.svg)](https://upstash.com)
 
 Polyglot submission for Wave's Senior Machine Learning Engineer role. Ships a working product as the application itself.
 
@@ -109,7 +110,11 @@ dashboard/
   app/                         Next.js 16 App Router pages
   components/                  SplashBanner, WhatsNew, SystemStatusCharts, etc.
   src/data/meta.json           Metafile driving all app identity, SEO
-  src/context/                 AppStatusContext (30s polling, 6-service health)
+  src/context/                 AppStatusContext (30s polling, 6-service health), ProvisioningContext
+  src/components/Footer.tsx    Persistent footer with links
+  src/components/VCardPanel.tsx Downloadable vCard overlay
+  src/components/GlobalSearch.tsx Cmd+K full-width search with voice input
+  src/components/ProvisioningGate.tsx Status-aware warm-up gate
 infra/
   lib/submission-stack.ts      DynamoDB + Lambda + EventBridge + SNS + S3
   lib/voice-stack.ts           Lambda + API Gateway + EventBridge publish
@@ -137,6 +142,127 @@ make sagemaker-stop
 
 # Dashboard dev server
 make dashboard-dev
+```
+
+## Local Development
+
+### Prerequisites
+
+| Tool | Version | Install |
+|------|---------|---------|
+| Node.js | 20+ | `brew install node@20` |
+| pnpm | 10+ | `corepack enable && corepack prepare pnpm@latest --activate` |
+| Rust | 1.77+ | `curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs \| sh` |
+| Python | 3.12 | `brew install python@3.12` |
+| Docker | 24+ | [Docker Desktop](https://docker.com/products/docker-desktop) |
+| AWS CLI | v2 | `brew install awscli` |
+| Fly CLI | latest | `brew install flyctl` |
+
+### Dashboard (Next.js)
+
+```bash
+cd dashboard
+pnpm install
+pnpm dev          # http://localhost:3000
+pnpm build        # production build (standalone output)
+pnpm lint         # ESLint
+pnpm exec tsc --noEmit  # type check
+```
+
+### Dashboard Docker (production-like)
+
+```bash
+# Build and run the dashboard container locally
+docker build -t wave-dashboard:local ./dashboard
+docker run --rm -p 3000:3000 wave-dashboard:local
+# Visit http://localhost:3000
+```
+
+### Backend (Rust + PyO3)
+
+```bash
+cd backend
+
+# Rust tests — requires Python 3.12 (PyO3 0.23 does not support Python 3.14)
+# If your system default is Python 3.14, create a venv first:
+python3.12 -m venv .venv && source .venv/bin/activate
+
+export PYO3_USE_ABI3_FORWARD_COMPATIBILITY=1
+cargo test --release
+
+# Or build + test inside Docker (recommended, matches CI):
+docker build -f Dockerfile.lambda --platform linux/amd64 -t wave-lambda:ci .
+```
+
+### Python tests
+
+```bash
+cd backend
+pip install -r requirements.txt   # boto3, pytest, mypy, moto
+python -m pytest tests/ -v
+mypy python/
+```
+
+> **Note:** On macOS with system Python 3.14+, `pip install` is blocked by PEP 668. Use a virtual environment: `python3.12 -m venv .venv && source .venv/bin/activate`
+
+### Infrastructure (CDK)
+
+```bash
+cd infra
+npm install
+npx tsc --noEmit   # type check
+npx cdk synth      # validate CloudFormation templates
+npx cdk deploy --all --require-approval never  # deploy (needs AWS creds)
+```
+
+### Environment Variables
+
+```bash
+# dashboard/.env.local
+ANTHROPIC_API_KEY=sk-ant-...              # Claude API key for RAG chatbot
+NEXT_PUBLIC_VOICE_API_URL=...             # Voice API Gateway URL (from AWS deploy)
+UPSTASH_REDIS_REST_URL=https://...        # Upstash Redis REST URL (free tier)
+UPSTASH_REDIS_REST_TOKEN=...              # Upstash Redis REST token
+```
+
+For production (Fly.io), set secrets:
+
+```bash
+flyctl secrets set \
+  ANTHROPIC_API_KEY="sk-ant-..." \
+  UPSTASH_REDIS_REST_URL="https://..." \
+  UPSTASH_REDIS_REST_TOKEN="..." \
+  -a wave-apply-ericgitangu
+```
+
+> **Upstash Redis** (free tier: 10K commands/day, 256MB) persists submission history across deploys. Create a database at [console.upstash.com](https://console.upstash.com/redis).
+
+## Troubleshooting
+
+| Issue | Cause | Fix |
+|-------|-------|-----|
+| `cargo test` linker errors on macOS | PyO3 0.23 + Python 3.14 ABI mismatch | Use Python 3.12: `brew install python@3.12`, create venv, set `PYO3_PYTHON=python3.12` |
+| `pip install` fails with "externally-managed-environment" | PEP 668 on macOS | Use a venv: `python3.12 -m venv .venv && source .venv/bin/activate` |
+| Health endpoint shows "degraded" | AWS services not deployed yet or credentials missing | Deploy backend: `make deploy`, or set `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` |
+| SageMaker shows "down" | Endpoint not running (costs $0.12/hr) | Start on demand: `make sagemaker-start` (auto-stops after 59min) |
+| Docker build fails on ARM Mac | Lambda image requires `linux/amd64` | Use `--platform linux/amd64` flag (already set in Makefile/scripts) |
+| `pnpm build` OOM | Next.js standalone build needs memory | `NODE_OPTIONS="--max-old-space-size=4096" pnpm build` |
+
+## DNS Setup
+
+The dashboard is deployed to Fly.io as `wave-apply-ericgitangu.fly.dev`.
+
+To use a custom domain (`wave-apply.ericgitangu.com`):
+
+```bash
+# 1. Add certificate on Fly
+flyctl certs add wave-apply.ericgitangu.com -a wave-apply-ericgitangu
+
+# 2. Add CNAME in your DNS provider
+# wave-apply  CNAME  wave-apply-ericgitangu.fly.dev
+
+# 3. Verify
+flyctl certs show wave-apply.ericgitangu.com -a wave-apply-ericgitangu
 ```
 
 ## Cost Management

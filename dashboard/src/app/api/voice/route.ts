@@ -3,6 +3,14 @@ import { encrypt } from '@/lib/crypto'
 
 const ENCRYPTION_KEY = process.env.API_ENCRYPTION_KEY || 'wave-voice-default-key'
 
+const FRENCH_KEYWORDS: Record<string, string[]> = {
+  check_balance: ['solde', 'combien', 'reste', 'vérifier', 'consulter'],
+  send_money: ['envoyer', 'transférer', 'payer', 'argent'],
+  account_info: ['compte', 'informations', 'profil', 'détails'],
+  help: ['aide', 'aidez', 'problème', 'assistance'],
+  greeting: ['bonjour', 'salut', 'bonsoir', 'coucou'],
+}
+
 const SWAHILI_KEYWORDS: Record<string, string[]> = {
   check_balance: ['angalia', 'salio', 'balance', 'pesa yangu'],
   send_money: ['tuma', 'pesa', 'kutuma', 'peleka'],
@@ -20,8 +28,16 @@ const ENGLISH_KEYWORDS: Record<string, string[]> = {
 }
 
 const RESPONSES: Record<string, Record<string, string>> = {
+  fr: {
+    check_balance: 'Votre solde actuel est de 15 320 XOF. Dernière transaction : -2 500 XOF (transfert à Amadou).',
+    send_money: 'Prêt à envoyer de l\'argent. Veuillez préciser le destinataire et le montant.',
+    account_info: 'Compte : Wave Mobile Money. Statut : Actif. KYC : Vérifié. Niveau : Standard.',
+    help: 'Je peux vous aider à vérifier votre solde, envoyer de l\'argent ou consulter vos informations de compte.',
+    greeting: 'Bienvenue sur Wave ! Comment puis-je vous aider ?',
+    unknown: 'Je n\'ai pas compris. Essayez : « consulter solde », « envoyer argent » ou « informations compte ».',
+  },
   en: {
-    check_balance: 'Your current balance is 15,320 XOF. Last transaction: -2,500 XOF (transfer to Amadou).',
+    check_balance: 'Your current balance is KES 24,500. Last transaction: -KES 3,200 (transfer to John).',
     send_money: 'Ready to send money. Please specify the recipient and amount.',
     account_info: 'Account: Wave Mobile Money. Status: Active. KYC: Verified. Tier: Standard.',
     help: 'I can help you check your balance, send money, or view account info. What would you like to do?',
@@ -29,7 +45,7 @@ const RESPONSES: Record<string, Record<string, string>> = {
     unknown: 'I did not understand that. Try: "check balance", "send money", or "account info".',
   },
   sw: {
-    check_balance: 'Salio lako ni 15,320 XOF. Muamala wa mwisho: -2,500 XOF (kutuma kwa Amadou).',
+    check_balance: 'Salio lako ni KES 24,500. Muamala wa mwisho: -KES 3,200 (kutuma kwa John).',
     send_money: 'Tayari kutuma pesa. Tafadhali taja mpokeaji na kiasi.',
     account_info: 'Akaunti: Wave Mobile Money. Hali: Hai. KYC: Imethibitishwa. Kiwango: Kawaida.',
     help: 'Naweza kukusaidia kuangalia salio, kutuma pesa, au kuona taarifa za akaunti. Unahitaji nini?',
@@ -41,7 +57,16 @@ const RESPONSES: Record<string, Record<string, string>> = {
 function classify(text: string): { language: string; intent: string; confidence: number } {
   const lower = text.toLowerCase().trim()
 
-  // Check Swahili first
+  // Check French first (Wave's primary Senegal market)
+  for (const [intent, keywords] of Object.entries(FRENCH_KEYWORDS)) {
+    for (const kw of keywords) {
+      if (lower.includes(kw)) {
+        return { language: 'fr', intent, confidence: 0.88 }
+      }
+    }
+  }
+
+  // Check Swahili (East African markets)
   for (const [intent, keywords] of Object.entries(SWAHILI_KEYWORDS)) {
     for (const kw of keywords) {
       if (lower.includes(kw)) {

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Brain, Mic, Globe, Rocket } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -30,10 +30,13 @@ const item = {
 }
 
 export default function SplashBanner() {
-  const [visible, setVisible] = useState(() => {
-    if (typeof window === 'undefined') return false
-    return !sessionStorage.getItem(STORAGE_KEY)
-  })
+  const [visible, setVisible] = useState(false)
+
+  useEffect(() => {
+    if (!sessionStorage.getItem(STORAGE_KEY)) {
+      requestAnimationFrame(() => setVisible(true))
+    }
+  }, [])
 
   function dismiss() {
     sessionStorage.setItem(STORAGE_KEY, 'true')

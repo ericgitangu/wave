@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
+import { Plus_Jakarta_Sans } from 'next/font/google'
 import { ThemeProvider } from 'next-themes'
 import './globals.css'
 
@@ -12,16 +12,15 @@ import InstallPrompt from '@/components/pwa/install-prompt'
 import ServiceWorkerRegister from '@/components/pwa/sw-register'
 import { Toaster } from '@/components/ui/sonner'
 import WhatsNew from '@/components/WhatsNew'
+import Footer from '@/components/Footer'
+import VCardPanel from '@/components/VCardPanel'
 import { AppStatusProvider } from '@/context/app-status-context'
+import { ProvisioningProvider } from '@/context/provisioning-context'
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
+const jakarta = Plus_Jakarta_Sans({
+  variable: '--font-jakarta',
   subsets: ['latin'],
-})
-
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800'],
 })
 
 export const metadata: Metadata = {
@@ -69,7 +68,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${jakarta.variable} antialiased`}
       >
         <ThemeProvider
           defaultTheme="dark"
@@ -78,6 +77,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <AppStatusProvider>
+          <ProvisioningProvider>
             <div className="flex min-h-screen">
               <CollapsibleNav />
               <div className="flex-1 flex flex-col">
@@ -86,13 +86,16 @@ export default function RootLayout({
                   <ThemeToggle />
                 </header>
                 <main className="flex-1 p-6">{children}</main>
+                <Footer />
               </div>
             </div>
             <ChatWidget />
+            <VCardPanel />
             <InstallPrompt />
             <ServiceWorkerRegister />
             <Toaster />
             <WhatsNew />
+          </ProvisioningProvider>
           </AppStatusProvider>
         </ThemeProvider>
       </body>

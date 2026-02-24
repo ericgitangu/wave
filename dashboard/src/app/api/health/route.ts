@@ -23,7 +23,12 @@ async function probeLambda(functionName: string): Promise<ServiceStatus> {
       })
     )
     return 'up'
-  } catch {
+  } catch (err: unknown) {
+    const code = (err as { name?: string })?.name
+    // Not deployed yet
+    if (code === 'ResourceNotFoundException') return 'degraded'
+    // Credentials/permissions issues — service exists, access problem
+    if (code === 'AccessDeniedException' || code === 'UnrecognizedClientException') return 'degraded'
     return 'down'
   }
 }
@@ -39,7 +44,11 @@ async function probeSageMaker(): Promise<ServiceStatus> {
     if (result.EndpointStatus === 'Creating' || result.EndpointStatus === 'Updating')
       return 'degraded'
     return 'down'
-  } catch {
+  } catch (err: unknown) {
+    const msg = (err as { message?: string })?.message ?? ''
+    const name = (err as { name?: string })?.name ?? ''
+    if (msg.includes('Could not find')) return 'degraded'
+    if (name === 'AccessDeniedException' || name === 'UnrecognizedClientException') return 'degraded'
     return 'down'
   }
 }
@@ -69,7 +78,14 @@ async function probeBedrock(modelId: string): Promise<ServiceStatus> {
       })
     )
     return 'up'
-  } catch {
+  } catch (err: unknown) {
+    const name = (err as { name?: string })?.name ?? ''
+    // Throttling or validation errors mean the service is reachable
+    if (name === 'ThrottlingException' || name === 'ValidationException') return 'degraded'
+    // Access denied means credentials exist but permissions missing
+    if (name === 'AccessDeniedException' || name === 'UnrecognizedClientException') return 'degraded'
+    // Model not found or not enabled
+    if (name === 'ResourceNotFoundException' || name === 'ModelNotReadyException') return 'degraded'
     return 'down'
   }
 }

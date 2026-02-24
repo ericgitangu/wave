@@ -14,6 +14,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import SystemStatusCharts from '@/components/SystemStatusCharts'
+import ProvisioningGate from '@/components/ProvisioningGate'
 import { useAppStatus } from '@/context/app-status-context'
 
 const statusIcon = (s: string) => {
@@ -32,6 +33,7 @@ export default function StatusPage() {
   const { health, submissions, submissionCount, lastAck, isPolling, refreshNow } = useAppStatus()
 
   return (
+    <ProvisioningGate>
     <div className="mx-auto max-w-6xl space-y-6">
       <div className="flex items-start justify-between gap-4">
         <div className="space-y-2">
@@ -197,5 +199,6 @@ export default function StatusPage() {
       <SystemStatusCharts />
 
     </div>
+    </ProvisioningGate>
   )
 }

@@ -1,6 +1,7 @@
+---
 name: CI
 
-on:
+"on":
   push:
     branches: [main]
   pull_request:
@@ -99,4 +100,6 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Build Lambda container image
-        run: docker build -f Dockerfile.lambda --platform linux/amd64 -t wave-lambda:ci .
+        run: >-
+          docker build -f Dockerfile.lambda
+          --platform linux/amd64 -t wave-lambda:ci .

@@ -2,6 +2,50 @@
 
 All notable changes to the Wave project will be documented in this file.
 
+## [0.6.0] - 2026-02-24
+
+### Added
+- **Upstash Redis** — Persistent submission history via Upstash Redis free tier (survives deploys)
+- **Environment docs** — `.env.prod` for production, Fly.io secrets setup in README
+- **Setup & Troubleshooting docs** — Local dev prerequisites, Docker workflow, PyO3/Python fixes, DNS setup
+- **DNS section** — Custom domain `wave-apply.ericgitangu.com` CNAME instructions
+
+### Changed
+- Submissions GET endpoint reads from Redis instead of returning hardcoded data
+- Submissions trigger POST persists each attempt to Redis with status labels (`delivered`, `auth_rejected`, `rate_limited`, `error`)
+- Production voice URL updated from localhost to `https://wave-apply.ericgitangu.com/api/voice`
+- README badges: added Upstash Redis
+
+### Fixed
+- Submission history no longer lost on redeploy (persisted in Redis)
+- Removed fake "delivered" submission entry from GET endpoint
+
+## [0.5.0] - 2026-02-24
+
+### Added
+- **Footer Component** — Persistent footer with contact links and build info
+- **VCard Panel** — Downloadable vCard contact card overlay
+- **Provisioning Gate** — Status-aware gate for SageMaker/Lambda warm-up with auto-poll (no longer auto-starts endpoints on page load)
+- **Provisioning API** — `/api/provision` endpoint for on-demand SageMaker/Lambda start and status polling
+- **Global Search** — Full-width Cmd+K search bar with voice input, keyboard navigation, and paginated results across projects/alignment/architecture
+- **Submissions Page** — `/submissions` with manual trigger button, past submission history table (IDs, dates, times, status badges, names), session trigger log, payload preview with copy, and Wave API instructions
+- **Submissions Trigger API** — `/api/submissions/trigger` POSTs the full `resume.json` payload to `api.wave.com/submit_resume` with bearer token
+- **OG Image** — Dynamic OpenGraph image with profile photo, tech chips, and Wave branding
+- **Profile Assets** — `eric-gitangu.jpg`, `eric-profile.png`, `wave-logo.png`
+
+### Changed
+- Sidebar logo: icon + gradient "Wave" text (works in both light and dark mode)
+- Search bar stretches full width (`flex-1`) in header
+- Health endpoint returns `degraded` instead of `down` for credential/throttling/access errors (pre-deployment friendly)
+- Provisioning context auto-polls status on mount instead of auto-starting SageMaker endpoints
+- Fly.io deployment region set to `jnb` (Johannesburg)
+- Upgraded all dashboard components: AlignmentMatrix, ArchitectureDiagram, ProjectCard, VoiceAgent, ChatWidget, SplashBanner, SubmissionStatus, WhatsNew
+
+### Fixed
+- OG image logo no longer has brightness/invert filter that turned it white
+- Sidebar logo no longer inverted to all-white in dark mode
+- ProvisioningGate no longer blocks content during initial status poll
+
 ## [0.4.0] - 2026-02-24
 
 ### Added

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useTheme } from 'next-themes'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Sun, Moon } from 'lucide-react'
@@ -8,7 +8,11 @@ import { Button } from '@/components/ui/button'
 
 export default function ThemeToggle() {
   const { theme, setTheme } = useTheme()
-  const [mounted] = useState(() => typeof window !== 'undefined')
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    requestAnimationFrame(() => setMounted(true))
+  }, [])
 
   if (!mounted) {
     return (

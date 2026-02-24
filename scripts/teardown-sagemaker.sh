@@ -11,7 +11,6 @@ ENDPOINT_NAME="wave-lang-detect"
 CONFIG_NAME="wave-lang-detect-config"
 MODEL_NAME="wave-lang-detect-model"
 
-RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m'
@@ -22,17 +21,23 @@ warn() { echo -e "${YELLOW}    WARN: $1${NC}"; }
 step "Deleting SageMaker endpoint: $ENDPOINT_NAME"
 aws sagemaker delete-endpoint \
   --endpoint-name "$ENDPOINT_NAME" \
-  --region "$REGION" 2>/dev/null && echo "    Endpoint deleted." || warn "Endpoint not found or already deleted."
+  --region "$REGION" 2>/dev/null \
+  && echo "    Endpoint deleted." \
+  || warn "Endpoint not found or already deleted."
 
 step "Deleting endpoint config: $CONFIG_NAME"
 aws sagemaker delete-endpoint-config \
   --endpoint-config-name "$CONFIG_NAME" \
-  --region "$REGION" 2>/dev/null && echo "    Config deleted." || warn "Config not found or already deleted."
+  --region "$REGION" 2>/dev/null \
+  && echo "    Config deleted." \
+  || warn "Config not found or already deleted."
 
 step "Deleting model: $MODEL_NAME"
 aws sagemaker delete-model \
   --model-name "$MODEL_NAME" \
-  --region "$REGION" 2>/dev/null && echo "    Model deleted." || warn "Model not found or already deleted."
+  --region "$REGION" 2>/dev/null \
+  && echo "    Model deleted." \
+  || warn "Model not found or already deleted."
 
 step "SageMaker teardown complete. No more endpoint costs."
 echo "    To recreate: bash scripts/build-lambdas.sh"

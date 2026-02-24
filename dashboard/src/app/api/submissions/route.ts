@@ -1,31 +1,23 @@
 import { NextResponse } from 'next/server'
-import { encrypt } from '@/lib/crypto'
-
-const ENCRYPTION_KEY = process.env.API_ENCRYPTION_KEY || 'wave-ack-default-key'
-
-function shortGuid(): string {
-  return crypto.randomUUID().slice(0, 8)
-}
+import { getSubmissions } from '@/lib/redis'
 
 export async function GET() {
-  const now = new Date().toISOString()
+  const now = new Date().toLocaleString('sv-SE', { timeZone: 'Africa/Nairobi' }).replace(' ', 'T') + '+03:00'
 
-  const submissions = [
-    {
-      id: shortGuid(),
-      timestamp: '2026-02-24T00:00:00Z',
-      status: 'acknowledged',
-      endpoint: 'https://api.wave.com/submit_resume',
-    },
-  ]
-
-  const payload = { submissions, count: submissions.length, last_checked: now }
-
-  // Encrypt payload for transit
-  const encrypted = await encrypt(JSON.stringify(payload), ENCRYPTION_KEY)
-
-  return NextResponse.json({
-    ...payload,
-    _encrypted: encrypted,
-  })
+  try {
+    const submissions = await getSubmissions()
+    return NextResponse.json({
+      submissions,
+      count: submissions.length,
+      last_checked: now,
+    })
+  } catch {
+    // Redis unavailable — return empty
+    return NextResponse.json({
+      submissions: [],
+      count: 0,
+      last_checked: now,
+      _error: 'Redis unavailable',
+    })
+  }
 }

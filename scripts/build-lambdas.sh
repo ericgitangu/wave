@@ -103,9 +103,9 @@ echo "    Response: $INVOKE_RESULT"
 
 # Step 7: Print endpoints
 step "Deployed Endpoints"
-echo "    Voice API:      $(aws ssm get-parameter --name /wave/voice-api-url --region $REGION --query Parameter.Value --output text 2>/dev/null || echo 'not found')"
-echo "    LangDetect API: $(aws ssm get-parameter --name /wave/langdetect-api-url --region $REGION --query Parameter.Value --output text 2>/dev/null || echo 'not found')"
-echo "    Bedrock Lambda: $(aws ssm get-parameter --name /wave/bedrock-lambda-arn --region $REGION --query Parameter.Value --output text 2>/dev/null || echo 'not found')"
+echo "    Voice API:      $(aws ssm get-parameter --name /wave/voice-api-url --region "$REGION" --query Parameter.Value --output text 2>/dev/null || echo 'not found')"
+echo "    LangDetect API: $(aws ssm get-parameter --name /wave/langdetect-api-url --region "$REGION" --query Parameter.Value --output text 2>/dev/null || echo 'not found')"
+echo "    Bedrock Lambda: $(aws ssm get-parameter --name /wave/bedrock-lambda-arn --region "$REGION" --query Parameter.Value --output text 2>/dev/null || echo 'not found')"
 echo "    SageMaker:      wave-lang-detect"
 echo "    S3 Payload:     s3://$PAYLOAD_BUCKET/"
 

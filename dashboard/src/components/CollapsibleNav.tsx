@@ -1,6 +1,7 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -11,6 +12,7 @@ import {
   Mic,
   Network,
   Activity,
+  Send,
   ChevronsLeft,
   ChevronsRight,
   Menu,
@@ -43,8 +45,9 @@ const links: NavLink[] = [
   { href: '/', label: 'Home', icon: Home },
   { href: '/alignment', label: 'Alignment', icon: BarChart3 },
   { href: '/projects', label: 'Projects', icon: FolderKanban },
-  { href: '/voice', label: 'Voice Demo', icon: Mic },
+  { href: '/voice-demo', label: 'Voice Demo', icon: Mic },
   { href: '/architecture', label: 'Architecture', icon: Network },
+  { href: '/submissions', label: 'Submissions', icon: Send },
   { href: '/status', label: 'Status', icon: Activity },
 ]
 
@@ -104,20 +107,30 @@ function NavContent({
           collapsed ? 'justify-center' : 'justify-between'
         )}
       >
-        <AnimatePresence mode="wait">
-          {!collapsed && (
-            <motion.div
-              initial={{ opacity: 0, width: 0 }}
-              animate={{ opacity: 1, width: 'auto' }}
-              exit={{ opacity: 0, width: 0 }}
-              className="overflow-hidden"
-            >
-              <span className="bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-lg font-bold text-transparent">
-                Wave
-              </span>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        <div className="flex items-center gap-2">
+          <Image
+            src="/wave-logo.png"
+            alt="Wave"
+            width={28}
+            height={28}
+            className="h-7 w-7 rounded-md object-contain"
+          />
+          <AnimatePresence mode="wait">
+            {!collapsed && (
+              <motion.div
+                key="expanded"
+                initial={{ opacity: 0, width: 0 }}
+                animate={{ opacity: 1, width: 'auto' }}
+                exit={{ opacity: 0, width: 0 }}
+                className="overflow-hidden"
+              >
+                <span className="bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-lg font-bold text-transparent">
+                  Wave
+                </span>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
         <Button variant="ghost" size="icon" onClick={onToggle}>
           {collapsed ? (
             <ChevronsRight className="h-4 w-4" />
@@ -144,11 +157,14 @@ function NavContent({
 }
 
 export default function CollapsibleNav() {
-  const [collapsed, setCollapsed] = useState(() => {
-    if (typeof window === 'undefined') return false
-    return localStorage.getItem(STORAGE_KEY) === 'true'
-  })
-  const [mounted] = useState(() => typeof window !== 'undefined')
+  const [collapsed, setCollapsed] = useState(() =>
+    typeof window !== 'undefined' ? localStorage.getItem(STORAGE_KEY) === 'true' : false
+  )
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    requestAnimationFrame(() => setMounted(true))
+  }, [])
 
   const toggle = useCallback(() => {
     setCollapsed((prev) => {

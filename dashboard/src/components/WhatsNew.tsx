@@ -20,42 +20,51 @@ const changelog: ChangeEntry[] = [
     version: '0.4.0',
     date: '2026-02-24',
     icon: <Shield className="h-4 w-4 text-emerald-400" />,
-    title: 'Cost Controls & Documentation',
+    title: 'Provisioning, Footer & Polish',
     items: [
-      'SageMaker auto-start/stop scheduler (59min cap)',
-      'MIT License, CHANGELOG, CI/CD badges',
-      'WhatsNew popup on mount',
+      'Auto-start/stop provisioning gate (59min cap)',
+      'Professional footer with vCard, LinkedIn, GitHub, resume links',
+      'Submission status explainer with Wave\'s exact instructions',
+      'Markdown rendering in chat responses',
+      'Jakarta Sans font, profile image on homepage',
     ],
   },
   {
     version: '0.3.0',
-    date: '2026-02-24',
+    date: '2026-02-23',
     icon: <Brain className="h-4 w-4 text-purple-400" />,
-    title: 'Bedrock + SageMaker ML Pipeline',
+    title: 'ML Pipeline & Real Health Probes',
     items: [
-      'Claude 3 Haiku sentiment analysis',
+      'Bedrock Claude Haiku sentiment analysis',
       'Titan Embeddings V2 semantic search',
-      'XLM-RoBERTa 20-language detection',
+      'SageMaker XLM-RoBERTa 20-language detection',
       'Docker Lambda builds with compiled Rust+PyO3',
-      'Real AWS health probes in dashboard',
+      'Real AWS health probes on system status page',
     ],
   },
   {
     version: '0.2.0',
-    date: '2026-02-23',
+    date: '2026-02-22',
     icon: <Zap className="h-4 w-4 text-amber-400" />,
-    title: 'Voice Pipeline & CDK Infrastructure',
+    title: 'Voice Demo & Dashboard UI',
     items: [
-      'Rust+PyO3 voice classification',
-      'CDK: DynamoDB, EventBridge, SNS, API Gateway',
+      'Afri-Voice multilingual agent (French/Swahili/English)',
+      'Alignment matrix with gradient cards & modal detail view',
+      'Architecture page with visual pipeline diagram',
+      'CDK stacks: DynamoDB, EventBridge, API Gateway',
     ],
   },
   {
     version: '0.1.0',
-    date: '2026-02-22',
+    date: '2026-02-21',
     icon: <Sparkles className="h-4 w-4 text-blue-400" />,
     title: 'Initial Release',
-    items: ['Project scaffolding and monorepo structure'],
+    items: [
+      'Monorepo: Rust+PyO3 backend, Next.js PWA dashboard, CDK infra',
+      'Encrypted submission pipeline with Bearer token auth',
+      'Rust voice classification module',
+      'System status page with polling',
+    ],
   },
 ]
 
@@ -65,8 +74,7 @@ export default function WhatsNew() {
   useEffect(() => {
     const seen = localStorage.getItem(STORAGE_KEY)
     if (seen !== CURRENT_VERSION) {
-      // Show after a short delay so the app has time to render
-      const timer = setTimeout(() => setVisible(true), 800)
+      const timer = setTimeout(() => setVisible(true), 1200)
       return () => clearTimeout(timer)
     }
   }, [])

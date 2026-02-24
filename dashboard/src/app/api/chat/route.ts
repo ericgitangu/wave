@@ -6,6 +6,7 @@ Background:
 - 10+ years full-stack engineering (Python, Rust, TypeScript, C#, Go)
 - 3 years focused AI/ML: LLMs, RAG, voice agents, sentiment analysis, GANs
 - 7 years building products for African markets (Kenya, Senegal, Cote d'Ivoire)
+- 13 years in the US with exposure to Silicon Valley engineering practices
 - Native Swahili speaker, experienced with low-resource language challenges
 - 80+ certifications (AWS, Azure, GCP, DeepLearning.AI, Meta, Stanford)
 - 92 GitHub repositories
