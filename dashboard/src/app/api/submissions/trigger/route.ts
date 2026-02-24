@@ -16,14 +16,22 @@ export async function POST() {
   const id = `wave-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`
 
   try {
-    // Load resume payload from file
-    const payloadPath = join(process.cwd(), '..', 'payload', 'resume.json')
-    let payload: Record<string, unknown>
+    // Load resume payload — try multiple paths for local dev vs Docker
+    const paths = [
+      join(process.cwd(), 'public', 'resume.json'),     // Docker / standalone
+      join(process.cwd(), '..', 'payload', 'resume.json'), // local dev (monorepo root)
+    ]
+    let payload: Record<string, unknown> | null = null
 
-    try {
-      const raw = await readFile(payloadPath, 'utf-8')
-      payload = JSON.parse(raw)
-    } catch {
+    for (const p of paths) {
+      try {
+        const raw = await readFile(p, 'utf-8')
+        payload = JSON.parse(raw)
+        break
+      } catch { /* try next path */ }
+    }
+
+    if (!payload) {
       // Fallback inline payload if file not found (e.g. in Docker)
       payload = {
         name: 'Eric Gitangu',
