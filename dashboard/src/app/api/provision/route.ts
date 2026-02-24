@@ -55,7 +55,7 @@ async function checkSageMaker(): Promise<ServiceState> {
 
 async function checkBedrock(modelId: string): Promise<ServiceState> {
   try {
-    const body = modelId.startsWith('anthropic')
+    const body = modelId.includes('anthropic')
       ? JSON.stringify({
           anthropic_version: 'bedrock-2023-05-31',
           max_tokens: 1,
@@ -81,7 +81,7 @@ async function getStatus(): Promise<ProvisionStatus> {
   const results = await Promise.allSettled([
     checkLambda('wave-submission-handler'),
     checkLambda('wave-voice-handler'),
-    checkBedrock('anthropic.claude-3-haiku-20240307-v1:0'),
+    checkBedrock('us.anthropic.claude-3-5-haiku-20241022-v1:0'),
     checkBedrock('amazon.titan-embed-text-v2:0'),
     checkSageMaker(),
   ])
@@ -149,7 +149,15 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
-  const { action } = await request.json()
+  const { action, service } = await request.json()
+  const target = service ?? 'sagemaker'
+
+  if (target !== 'sagemaker') {
+    return NextResponse.json(
+      { error: `Service '${target}' does not support start/stop` },
+      { status: 400 }
+    )
+  }
 
   if (action === 'start') {
     const sagemakerResult = await startSageMaker()
@@ -163,7 +171,9 @@ export async function POST(request: NextRequest) {
 
   if (action === 'stop') {
     const sagemakerResult = await stopSageMaker()
+    const status = await getStatus()
     return NextResponse.json({
+      ...status,
       action: 'stop',
       sagemaker: sagemakerResult,
       timestamp: new Date().toISOString(),

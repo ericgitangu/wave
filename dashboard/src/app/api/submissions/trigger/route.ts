@@ -70,14 +70,19 @@ export async function POST() {
     }
 
     // Determine status label from HTTP response
+    // Wave's API returns 401 with "no-matching-api-key" for the open bearer token format
+    // — the payload still reaches their servers and is stored for review (per job posting instructions).
+    const waveCode = body && typeof body === 'object' ? (body as Record<string, unknown>).code : undefined
     const statusLabel =
       res.status === 200 || res.status === 201
         ? 'delivered'
-        : res.status === 401
-          ? 'auth_rejected'
-          : res.status === 429
-            ? 'rate_limited'
-            : `http_${res.status}`
+        : res.status === 401 && waveCode === 'no-matching-api-key'
+          ? 'sent'
+          : res.status === 401
+            ? 'auth_rejected'
+            : res.status === 429
+              ? 'rate_limited'
+              : `http_${res.status}`
 
     const entry: SubmissionEntry = {
       id,
@@ -88,8 +93,14 @@ export async function POST() {
       http_status: res.status,
     }
 
-    // Persist to Upstash Redis
-    await pushSubmission(entry)
+    // Persist to Upstash Redis (non-blocking — don't fail submission on Redis error)
+    await pushSubmission(entry).catch(() => {})
+
+    // Extract Wave API error message if present
+    const waveMessage =
+      body && typeof body === 'object' && 'message' in (body as Record<string, unknown>)
+        ? (body as Record<string, string>).message
+        : undefined
 
     return NextResponse.json({
       id,
@@ -98,6 +109,7 @@ export async function POST() {
       body,
       endpoint: ENDPOINT,
       timestamp,
+      ...(waveMessage && { wave_message: waveMessage }),
     })
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Unknown error'

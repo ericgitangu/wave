@@ -31,7 +31,7 @@
     {
       "category": "Required",
       "requirement": "Fluency with AI coding agents",
-      "evidence": "This entire submission built with AI coding agents. Production workflows at Ignite using Claude Code for automation.",
+      "evidence": "This entire submission built with AI coding agents. Production workflows at Ignite using coding agents for automation.",
       "strength": "exceptional",
       "projects": ["Wave Showcase", "UniCorns"]
     },

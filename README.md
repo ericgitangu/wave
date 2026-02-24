@@ -58,6 +58,25 @@ graph TB
   Submit --> S3
 ```
 
+## AWS Backend Services
+
+| Service | What it does | Why |
+|---------|-------------|-----|
+| Voice Lambda | Tokenizes input, detects language (Swahili/English), classifies mobile money intent (check_balance, send_money, etc.) | Core Wave feature — voice/chat classification for mobile money support |
+| Submission Lambda | POSTs resume JSON to Wave's API, logs to DynamoDB, publishes to EventBridge | The actual job application mechanism |
+| Bedrock Titan | Generates 256-dim embeddings for semantic search across support tickets | Search/similarity for support message routing |
+| Bedrock Claude 3.5 Haiku | Sentiment analysis (positive/negative/neutral) + complaint classification via US inference profile | Understanding customer sentiment at scale |
+| SageMaker | XLM-RoBERTa model detecting 20 languages (incl. Swahili, Wolof, French) | Wave operates across West/East Africa — language detection is critical |
+
+**Endpoints (post-deploy):**
+
+```
+Voice API:      https://96lch8ou19.execute-api.us-east-1.amazonaws.com
+LangDetect API: https://dzl1p5fct7.execute-api.us-east-1.amazonaws.com
+Bedrock Lambda: wave-bedrock-sentiment
+SageMaker:      wave-lang-detect (ml.m5.large — auto-stop after 59min)
+```
+
 ## Submission
 
 The core deliverable — POST a JSON resume to Wave's API:

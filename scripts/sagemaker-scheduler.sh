@@ -17,6 +17,7 @@ ENDPOINT_NAME="wave-lang-detect"
 CONFIG_NAME="wave-lang-detect-config"
 MODEL_NAME="wave-lang-detect-model"
 AUTO_STOP_MINUTES=59
+PID_FILE="/tmp/wave-sagemaker-autostop.pid"
 
 GREEN='\033[0;32m'
 RED='\033[0;31m'
@@ -35,37 +36,95 @@ get_status() {
     --output text 2>/dev/null || echo "NOT_FOUND"
 }
 
+# Check if an auto-stop process is already running
+autostop_running() {
+  if [ -f "$PID_FILE" ]; then
+    local pid
+    pid=$(cat "$PID_FILE")
+    if kill -0 "$pid" 2>/dev/null; then
+      return 0
+    fi
+    # Stale PID file — clean up
+    rm -f "$PID_FILE"
+  fi
+  return 1
+}
+
 cmd_status() {
   local status
   status=$(get_status)
   echo -e "Endpoint: $ENDPOINT_NAME"
+  echo -e "Region:   $REGION"
   echo -e "Status:   $status"
-  if [ "$status" = "InService" ]; then
-    echo -e "          ${GREEN}Running — remember to stop when done!${NC}"
-  elif [ "$status" = "NOT_FOUND" ]; then
-    echo -e "          ${YELLOW}Not deployed${NC}"
-  else
-    echo -e "          ${YELLOW}$status${NC}"
-  fi
+
+  case "$status" in
+    InService)
+      echo -e "          ${GREEN}Running — remember to stop when done!${NC}"
+      if autostop_running; then
+        echo -e "          Auto-stop PID: $(cat "$PID_FILE") (active)"
+      else
+        echo -e "          ${YELLOW}No auto-stop scheduled!${NC}"
+      fi
+      ;;
+    Creating|Updating)
+      echo -e "          ${YELLOW}$status — wait for InService${NC}"
+      ;;
+    Deleting)
+      echo -e "          ${YELLOW}Shutting down...${NC}"
+      ;;
+    Failed)
+      echo -e "          ${RED}Endpoint failed — check CloudWatch logs${NC}"
+      ;;
+    NOT_FOUND)
+      echo -e "          ${YELLOW}Not deployed — run 'start' to create${NC}"
+      ;;
+    *)
+      echo -e "          ${YELLOW}$status${NC}"
+      ;;
+  esac
 }
 
 cmd_start() {
   local status
   status=$(get_status)
 
-  if [ "$status" = "InService" ]; then
-    echo "Endpoint already running."
-    echo "Auto-stop scheduled in ${AUTO_STOP_MINUTES} minutes."
-    schedule_auto_stop
-    return
-  fi
-
-  if [ "$status" = "Creating" ]; then
-    echo "Endpoint is already being created. Waiting..."
-    wait_for_service
-    schedule_auto_stop
-    return
-  fi
+  case "$status" in
+    InService)
+      step "Endpoint already running"
+      # Reschedule auto-stop (resets the timer)
+      cancel_autostop
+      schedule_auto_stop
+      return
+      ;;
+    Creating)
+      step "Endpoint already being created — waiting for InService"
+      wait_for_service
+      cancel_autostop
+      schedule_auto_stop
+      return
+      ;;
+    Updating)
+      step "Endpoint updating — waiting for InService"
+      wait_for_service
+      cancel_autostop
+      schedule_auto_stop
+      return
+      ;;
+    Deleting)
+      step "Endpoint is deleting — waiting for it to finish before recreating"
+      while [ "$(get_status)" = "Deleting" ]; do
+        sleep 5
+      done
+      # Fall through to create
+      ;;
+    Failed)
+      warn "Previous endpoint failed — deleting and recreating"
+      aws sagemaker delete-endpoint \
+        --endpoint-name "$ENDPOINT_NAME" \
+        --region "$REGION" 2>/dev/null || true
+      sleep 5
+      ;;
+  esac
 
   step "Creating SageMaker endpoint: $ENDPOINT_NAME"
 
@@ -86,7 +145,15 @@ cmd_start() {
     --endpoint-name "$ENDPOINT_NAME" \
     --endpoint-config-name "$CONFIG_NAME" \
     --region "$REGION" 2>/dev/null || {
-    warn "create-endpoint failed — may already exist or be creating"
+    warn "create-endpoint call failed — may already exist"
+    # Re-check status
+    local recheck
+    recheck=$(get_status)
+    if [ "$recheck" = "InService" ] || [ "$recheck" = "Creating" ]; then
+      step "Endpoint exists ($recheck)"
+    else
+      fail "Could not create endpoint (status: $recheck)"
+    fi
   }
 
   wait_for_service
@@ -96,20 +163,38 @@ cmd_start() {
 wait_for_service() {
   step "Waiting for endpoint to reach InService (this takes 5-10 min)..."
   local i=0
-  while [ $i -lt 60 ]; do
+  while [ $i -lt 120 ]; do
     local status
     status=$(get_status)
-    if [ "$status" = "InService" ]; then
-      echo -e "    ${GREEN}Endpoint is InService!${NC}"
-      return
-    elif [ "$status" = "Failed" ]; then
-      fail "Endpoint creation failed."
-    fi
+    case "$status" in
+      InService)
+        echo -e "    ${GREEN}Endpoint is InService!${NC}"
+        return
+        ;;
+      Failed)
+        fail "Endpoint creation failed. Check CloudWatch logs."
+        ;;
+      NOT_FOUND)
+        fail "Endpoint disappeared during creation."
+        ;;
+    esac
     echo "    Status: $status (waiting... ${i}0s elapsed)"
     sleep 10
     i=$((i + 1))
   done
-  fail "Timeout waiting for endpoint."
+  fail "Timeout waiting for endpoint (20 minutes)."
+}
+
+cancel_autostop() {
+  if [ -f "$PID_FILE" ]; then
+    local pid
+    pid=$(cat "$PID_FILE")
+    if kill -0 "$pid" 2>/dev/null; then
+      kill "$pid" 2>/dev/null || true
+      echo "    Cancelled previous auto-stop (PID $pid)"
+    fi
+    rm -f "$PID_FILE"
+  fi
 }
 
 schedule_auto_stop() {
@@ -124,25 +209,32 @@ schedule_auto_stop() {
       --endpoint-name "$ENDPOINT_NAME" \
       --region "$REGION" 2>/dev/null || true
     echo -e "${GREEN}    Endpoint deleted. Cost stopped.${NC}"
+    rm -f "$PID_FILE"
   ) &
   local bg_pid=$!
+  echo "$bg_pid" > "$PID_FILE"
   echo "    Background stop PID: $bg_pid"
   echo "    To cancel auto-stop: kill $bg_pid"
-  echo "$bg_pid" > "/tmp/wave-sagemaker-autostop.pid"
 }
 
 cmd_stop() {
   step "Stopping SageMaker endpoint: $ENDPOINT_NAME"
 
   # Kill any pending auto-stop
-  if [ -f /tmp/wave-sagemaker-autostop.pid ]; then
-    local pid
-    pid=$(cat /tmp/wave-sagemaker-autostop.pid)
-    kill "$pid" 2>/dev/null || true
-    rm -f /tmp/wave-sagemaker-autostop.pid
+  cancel_autostop
+
+  local status
+  status=$(get_status)
+  if [ "$status" = "NOT_FOUND" ] || [ "$status" = "Deleting" ]; then
+    echo "    Endpoint already stopped/deleting."
+    return
   fi
 
-  bash "$(dirname "$0")/teardown-sagemaker.sh"
+  aws sagemaker delete-endpoint \
+    --endpoint-name "$ENDPOINT_NAME" \
+    --region "$REGION" 2>/dev/null \
+    && echo -e "    ${GREEN}Endpoint deletion initiated. Cost will stop shortly.${NC}" \
+    || warn "delete-endpoint failed — may already be deleted."
 }
 
 case "${1:-status}" in

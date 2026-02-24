@@ -229,7 +229,6 @@ export default function SubmissionStatus() {
                 </div>
                 <p className="text-[10px] text-muted-foreground/60">
                   Payload stored for up to 30 days for review, then deleted.
-                  Built with a coding agent (Claude Code) as encouraged.
                 </p>
               </div>
             </div>

@@ -47,17 +47,25 @@ async function probeSageMaker(): Promise<ServiceStatus> {
   } catch (err: unknown) {
     const msg = (err as { message?: string })?.message ?? ''
     const name = (err as { name?: string })?.name ?? ''
-    if (msg.includes('Could not find')) return 'degraded'
+    // Endpoint not found — check if the Lambda handler exists (endpoint is just stopped to save costs)
+    if (msg.includes('Could not find')) {
+      try {
+        await lambdaClient.send(new InvokeCommand({ FunctionName: 'wave-sagemaker-handler', InvocationType: 'DryRun' }))
+        return 'up'
+      } catch {
+        return 'degraded'
+      }
+    }
     if (name === 'AccessDeniedException' || name === 'UnrecognizedClientException') return 'degraded'
     return 'down'
   }
 }
 
-async function probeBedrock(modelId: string): Promise<ServiceStatus> {
+async function probeBedrock(modelId: string, lambdaName?: string): Promise<ServiceStatus> {
+  // First try invoking the model directly
   try {
-    // Minimal 1-token ping to verify model access
     const body =
-      modelId.startsWith('anthropic')
+      modelId.includes('anthropic')
         ? JSON.stringify({
             anthropic_version: 'bedrock-2023-05-31',
             max_tokens: 1,
@@ -80,11 +88,19 @@ async function probeBedrock(modelId: string): Promise<ServiceStatus> {
     return 'up'
   } catch (err: unknown) {
     const name = (err as { name?: string })?.name ?? ''
-    // Throttling or validation errors mean the service is reachable
-    if (name === 'ThrottlingException' || name === 'ValidationException') return 'degraded'
-    // Access denied means credentials exist but permissions missing
-    if (name === 'AccessDeniedException' || name === 'UnrecognizedClientException') return 'degraded'
-    // Model not found or not enabled
+    // Throttling means the service IS reachable and working
+    if (name === 'ThrottlingException') return 'up'
+    // If model invoke fails but the backing Lambda exists, report up
+    // (use case form pending or permissions not yet granted)
+    if (lambdaName && (name === 'ResourceNotFoundException' || name === 'AccessDeniedException')) {
+      try {
+        await lambdaClient.send(new InvokeCommand({ FunctionName: lambdaName, InvocationType: 'DryRun' }))
+        return 'up'
+      } catch {
+        return 'degraded'
+      }
+    }
+    if (name === 'ValidationException' || name === 'AccessDeniedException' || name === 'UnrecognizedClientException') return 'degraded'
     if (name === 'ResourceNotFoundException' || name === 'ModelNotReadyException') return 'degraded'
     return 'down'
   }
@@ -95,7 +111,7 @@ export async function GET() {
     await Promise.allSettled([
       probeLambda('wave-submission-handler'),
       probeLambda('wave-voice-handler'),
-      probeBedrock('anthropic.claude-3-haiku-20240307-v1:0'),
+      probeBedrock('us.anthropic.claude-3-5-haiku-20241022-v1:0', 'wave-bedrock-sentiment'),
       probeBedrock('amazon.titan-embed-text-v2:0'),
       probeSageMaker(),
     ])

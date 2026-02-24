@@ -41,6 +41,7 @@ interface TriggerResult {
 
 const ackStatusStyle: Record<string, string> = {
   delivered: 'bg-green-500/20 text-green-400',
+  sent: 'bg-blue-500/20 text-blue-400',
   acknowledged: 'bg-green-500/20 text-green-400',
   pending: 'bg-amber-500/20 text-amber-400',
   auth_rejected: 'bg-red-500/20 text-red-400',
@@ -49,7 +50,7 @@ const ackStatusStyle: Record<string, string> = {
 }
 
 const PAYLOAD_PREVIEW = {
-  meta: { timezone: 'Africa/Nairobi', version: '2.0', built_with: 'Claude Code' },
+  meta: { timezone: 'Africa/Nairobi', version: '2.0', author: 'Eric Gitangu (Deveric)' },
   applicant: {
     name: 'Eric Gitangu',
     email: 'developer.ericgitangu@gmail.com',

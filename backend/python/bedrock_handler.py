@@ -26,7 +26,7 @@ BEDROCK_CLIENT = boto3.client("bedrock-runtime", region_name="us-east-1")
 DYNAMODB = boto3.resource("dynamodb", region_name="us-east-1")
 TABLE_NAME = os.environ.get("ML_RESULTS_TABLE", "wave-ml-results")
 
-CLAUDE_HAIKU_MODEL = "anthropic.claude-3-haiku-20240307-v1:0"
+CLAUDE_HAIKU_MODEL = "us.anthropic.claude-3-5-haiku-20241022-v1:0"
 TITAN_EMBED_MODEL = "amazon.titan-embed-text-v2:0"
 
 

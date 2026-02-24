@@ -2,6 +2,30 @@
 
 All notable changes to the Wave project will be documented in this file.
 
+## [0.7.0] - 2026-02-25
+
+### Added
+- **AWS Backend fully wired** — All 4 CDK stacks deployed: Submission, Voice, Bedrock, SageMaker
+- **Voice API proxied to AWS Lambda** — `/api/voice` calls API Gateway → Lambda with local keyword fallback
+- **Haptic toast notifications** — Vibration patterns per severity level (success/warning/error) on submissions and health changes
+- **AWS credentials on Fly.io** — Health probes now hit real Lambda/SageMaker/Bedrock from production
+- **Service docs in README** — What each AWS service does and why, with live endpoint URLs
+- **SageMaker start/stop controls** — Inline start/stop buttons on the Status page SageMaker card with animated state transitions (starting → up → stopping → stopped)
+- **Per-service provision API** — `/api/provision` POST accepts `service` field for targeted start/stop (backward compatible)
+
+### Changed
+- Dockerfile.lambda: Rust 1.85 + Python 3.12 from Lambda base image + patchelf
+- Voice route: proxies to AWS API Gateway, gracefully falls back to local classification
+- SageMaker quota resolved — ml.m5.large endpoint now operational
+- Bedrock Claude model: switched from `claude-3-haiku` to `claude-3.5-haiku` via US inference profile (use case form not required)
+- SageMaker auto-stop timeout: 10 minutes from app, 59 minutes from CLI script
+- Provisioning context auto-stops SageMaker on page unload via `sendBeacon`
+
+### Fixed
+- Removed unused crypto encryption from API routes
+- Bedrock Claude health probe: `degraded` → `up` by using US inference profile `us.anthropic.claude-3-5-haiku-20241022-v1:0`
+- `.dockerignore` excludes `node_modules` from Fly build context (93MB → 1MB transfer)
+
 ## [0.6.0] - 2026-02-24
 
 ### Added

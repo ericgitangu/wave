@@ -24,17 +24,21 @@ interface ProvisioningState {
   maxMinutes: number
   triggerStart: () => void
   triggerStop: () => void
+  transitioning: Record<string, 'starting' | 'stopping' | null>
+  startService: (name: string) => void
+  stopService: (name: string) => void
 }
 
 const ProvisioningContext = createContext<ProvisioningState | undefined>(undefined)
 
-const MAX_MINUTES = 59
+const MAX_MINUTES = 10
 
 export function ProvisioningProvider({ children }: { children: ReactNode }) {
   const [overall, setOverall] = useState<ProvisioningState['overall']>('loading')
   const [services, setServices] = useState<ServiceStatus[]>([])
   const [startedAt, setStartedAt] = useState<string | null>(null)
   const [elapsedMinutes, setElapsedMinutes] = useState(0)
+  const [transitioning, setTransitioning] = useState<Record<string, 'starting' | 'stopping' | null>>({})
 
   const pollStatus = useCallback(async () => {
     try {
@@ -79,6 +83,47 @@ export function ProvisioningProvider({ children }: { children: ReactNode }) {
       setStartedAt(null)
     } catch {
       // Best-effort stop
+    }
+  }, [])
+
+  const startService = useCallback(async (name: string) => {
+    setTransitioning((prev) => ({ ...prev, [name]: 'starting' }))
+    try {
+      const res = await fetch('/api/provision', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'start', service: name }),
+      })
+      if (res.ok) {
+        const data = await res.json()
+        setStartedAt(data.started_at ?? new Date().toISOString())
+        setOverall(data.overall)
+        setServices(data.services ?? [])
+      }
+    } catch {
+      // will resolve on next poll
+    } finally {
+      setTransitioning((prev) => ({ ...prev, [name]: null }))
+    }
+  }, [])
+
+  const stopService = useCallback(async (name: string) => {
+    setTransitioning((prev) => ({ ...prev, [name]: 'stopping' }))
+    try {
+      const res = await fetch('/api/provision', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'stop', service: name }),
+      })
+      if (res.ok) {
+        const data = await res.json()
+        setOverall(data.overall)
+        setServices(data.services ?? [])
+      }
+    } catch {
+      // will resolve on next poll
+    } finally {
+      setTransitioning((prev) => ({ ...prev, [name]: null }))
     }
   }, [])
 
@@ -141,6 +186,9 @@ export function ProvisioningProvider({ children }: { children: ReactNode }) {
         maxMinutes: MAX_MINUTES,
         triggerStart,
         triggerStop,
+        transitioning,
+        startService,
+        stopService,
       }}
     >
       {children}

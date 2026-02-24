@@ -1,7 +1,7 @@
 'use client'
 
-import { motion } from 'framer-motion'
-import { Activity, CheckCircle2, AlertTriangle, XCircle, RefreshCw, Clock, Brain, Cpu } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Activity, CheckCircle2, AlertTriangle, XCircle, RefreshCw, Clock, Brain, Cpu, Play, Square, Loader2 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -16,6 +16,7 @@ import {
 import SystemStatusCharts from '@/components/SystemStatusCharts'
 import ProvisioningGate from '@/components/ProvisioningGate'
 import { useAppStatus } from '@/context/app-status-context'
+import { useProvisioning } from '@/context/provisioning-context'
 
 const statusIcon = (s: string) => {
   if (s === 'up' || s === 'healthy') return <CheckCircle2 className="h-5 w-5 text-emerald-500" />
@@ -25,8 +26,59 @@ const statusIcon = (s: string) => {
 
 const ackStatusStyle: Record<string, string> = {
   acknowledged: 'bg-green-500/20 text-green-400 dark:text-green-400',
+  sent: 'bg-blue-500/20 text-blue-600 dark:text-blue-400',
+  delivered: 'bg-green-500/20 text-green-600 dark:text-green-400',
   pending: 'bg-amber-500/20 text-amber-600 dark:text-amber-400',
-  delivered: 'bg-blue-500/20 text-blue-600 dark:text-blue-400',
+  auth_rejected: 'bg-red-500/20 text-red-600 dark:text-red-400',
+  rate_limited: 'bg-amber-500/20 text-amber-600 dark:text-amber-400',
+  error: 'bg-red-500/20 text-red-600 dark:text-red-400',
+}
+
+function ServiceControlButton({ service, currentState }: { service: string; currentState: string }) {
+  const { transitioning, startService, stopService } = useProvisioning()
+  const transition = transitioning[service]
+
+  const isTransitioning = transition === 'starting' || transition === 'stopping'
+    || currentState === 'starting' || currentState === 'stopping'
+
+  const effectiveState = transition ?? (currentState === 'starting' || currentState === 'stopping' ? currentState : null)
+
+  return (
+    <AnimatePresence mode="wait">
+      {effectiveState === 'starting' && (
+        <motion.div key="starting" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}>
+          <Button variant="ghost" size="xs" disabled className="text-amber-500 gap-1">
+            <Loader2 className="h-3 w-3 animate-spin" />
+            Starting…
+          </Button>
+        </motion.div>
+      )}
+      {effectiveState === 'stopping' && (
+        <motion.div key="stopping" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}>
+          <Button variant="ghost" size="xs" disabled className="text-amber-500 gap-1">
+            <Loader2 className="h-3 w-3 animate-spin" />
+            Stopping…
+          </Button>
+        </motion.div>
+      )}
+      {!isTransitioning && (currentState === 'up') && (
+        <motion.div key="stop" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}>
+          <Button variant="ghost" size="xs" onClick={() => stopService(service)} className="text-red-400 hover:text-red-300 hover:bg-red-500/10 gap-1">
+            <Square className="h-3 w-3" />
+            Stop
+          </Button>
+        </motion.div>
+      )}
+      {!isTransitioning && (currentState !== 'up') && (
+        <motion.div key="start" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}>
+          <Button variant="ghost" size="xs" onClick={() => startService(service)} className="text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10 gap-1">
+            <Play className="h-3 w-3" />
+            Start
+          </Button>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  )
 }
 
 export default function StatusPage() {
@@ -106,7 +158,10 @@ export default function StatusPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">SageMaker</CardTitle>
-            <Cpu className="h-4 w-4 text-muted-foreground" />
+            <div className="flex items-center gap-1">
+              <ServiceControlButton service="sagemaker" currentState={health.sagemaker} />
+              <Cpu className="h-4 w-4 text-muted-foreground" />
+            </div>
           </CardHeader>
           <CardContent className="flex items-center gap-2">
             {statusIcon(health.sagemaker)}
