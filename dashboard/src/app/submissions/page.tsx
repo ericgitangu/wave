@@ -26,6 +26,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { cn } from '@/lib/utils'
+import { notifySuccess, notifyWarning, notifyError } from '@/lib/notify'
 import { useAppStatus } from '@/context/app-status-context'
 
 const ENDPOINT = 'https://api.wave.com/submit_resume'
@@ -111,10 +112,22 @@ export default function SubmissionsPage() {
 
       setResult(entry)
       setTriggerHistory((prev) => [entry, ...prev].slice(0, 10))
+
+      // Haptic toast for result
+      if (entry.status < 300) {
+        notifySuccess('Submission delivered', `Wave API returned ${entry.status}`)
+      } else if (entry.status === 401) {
+        notifyWarning('Auth rejected', 'Bearer token not recognized by Wave API')
+      } else {
+        notifyError(`HTTP ${entry.status}`, entry.statusText)
+      }
+
       // Refresh submissions list after triggering
       setTimeout(refreshNow, 1000)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Network error')
+      const msg = err instanceof Error ? err.message : 'Network error'
+      setError(msg)
+      notifyError('Submission failed', msg)
     } finally {
       setSubmitting(false)
     }
@@ -125,6 +138,7 @@ export default function SubmissionsPage() {
       JSON.stringify(PAYLOAD_PREVIEW, null, 2)
     )
     setCopied(true)
+    notifySuccess('Payload copied to clipboard')
     setTimeout(() => setCopied(false), 2000)
   }, [])
 
