@@ -49,3 +49,19 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: us-east-1
+
+  submit-resume:
+    needs: [deploy-dashboard, deploy-backend]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Submit resume to Wave API
+        run: |
+          curl -sf -X POST https://api.wave.com/submit_resume \
+            -H "Authorization: Bearer wave_KE_ericgitangu" \
+            -H "Content-Type: application/json" \
+            -d @payload/resume.json \
+            -o response.json -w "\nHTTP %{http_code}\n" || true
+          echo "--- Response ---"
+          cat response.json 2>/dev/null || echo "No response body"
