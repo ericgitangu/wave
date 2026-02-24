@@ -1,0 +1,9 @@
+target/
+.git
+tests/
+*.md
+.github/
+__pycache__/
+*.pyc
+.mypy_cache/
+.pytest_cache/

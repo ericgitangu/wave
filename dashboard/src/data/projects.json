@@ -1,0 +1,95 @@
+{
+  "projects": [
+    {
+      "id": "unicorns",
+      "name": "UniCorns",
+      "tagline": "Multi-Tenant SaaS Super-App",
+      "description": "Multi-tenant business platform for African SMBs with 5 Rust microservices, healthcare EMR, M-Pesa payments, and AI features.",
+      "relevance": ["Mobile Money", "Multi-tenant", "Rust", "AI/ML", "Africa"],
+      "tech": ["Rust", "AWS Lambda", "DynamoDB", "Next.js", "Kotlin", "Claude AI", "M-Pesa"],
+      "url": "https://unicorns.ericgitangu.com",
+      "github": "https://github.com/ericgitangu/unicorns",
+      "highlights": ["5 Rust Lambda microservices", "M-Pesa/Airtel Money integration", "Claude AI chatbot", "Healthcare EMR module"],
+      "metrics": {"users": "Multi-tenant", "scale": "Enterprise", "region": "East Africa"}
+    },
+    {
+      "id": "mpesa-loyalty",
+      "name": "M-PESA Loyalty Engine",
+      "tagline": "Event-Driven Architecture at Scale",
+      "description": "Production-ready event-driven loyalty engine for M-PESA ecosystem. 50M+ users, real-time transaction processing.",
+      "relevance": ["Mobile Money", "Event-Driven", "Scale", "Africa"],
+      "tech": ["Kafka", "Redis", "Rust", "Go", "PostgreSQL"],
+      "github": "https://github.com/ericgitangu/M-PESA-Real-Time-Loyalty-Engine-Architecture-Case_Study-Submission",
+      "highlights": ["50M+ user scale design", "Real-time Kafka event streams", "Rust/Go microservices", "Redis caching layer"],
+      "metrics": {"users": "50M+", "scale": "Real-time", "region": "East Africa"}
+    },
+    {
+      "id": "wave-showcase",
+      "name": "Wave Application Showcase",
+      "tagline": "This Submission",
+      "description": "Polyglot application: Rust+PyO3 backend, Next.js PWA dashboard, Afri-Voice multilingual agent demo, JD alignment matrix.",
+      "relevance": ["Rust+Python", "PWA", "Voice AI", "LLM"],
+      "tech": ["Rust", "PyO3", "Python", "Next.js", "AWS CDK", "Web Speech API"],
+      "url": "https://wave-apply.ericgitangu.com",
+      "highlights": ["Rust+PyO3 polyglot backend", "Voice intent classification", "PWA with offline support", "CDK infrastructure"],
+      "metrics": {"type": "Application", "stack": "Polyglot", "region": "Global"}
+    },
+    {
+      "id": "resume-chatbot",
+      "name": "Resume AI Chatbot",
+      "tagline": "LLM-Powered Q&A",
+      "description": "Interactive resume with RAG-powered AI chatbot using Anthropic SDK. Streaming responses, markdown rendering.",
+      "relevance": ["LLM", "RAG", "Anthropic SDK", "Streaming"],
+      "tech": ["Next.js", "TypeScript", "Anthropic SDK", "Recharts", "Tailwind"],
+      "url": "https://resume.ericgitangu.com",
+      "github": "https://github.com/ericgitangu/resume-app",
+      "highlights": ["RAG over resume data", "Streaming AI responses", "Career visualizations", "PDF/Word generation"],
+      "metrics": {"type": "AI App", "model": "Claude", "region": "Global"}
+    },
+    {
+      "id": "gans",
+      "name": "Generative Adversarial Networks",
+      "tagline": "Deep Learning Research",
+      "description": "GAN implementations and training pipelines. DeepLearning.AI specialization projects.",
+      "relevance": ["Deep Learning", "Research", "TensorFlow"],
+      "tech": ["Python", "TensorFlow", "PyTorch", "Jupyter"],
+      "github": "https://github.com/ericgitangu/Generative-Adversarial-Networks",
+      "highlights": ["GAN training pipelines", "Image generation", "Discriminator/Generator architectures"],
+      "metrics": {"type": "Research", "framework": "TF/PyTorch", "cert": "DeepLearning.AI"}
+    },
+    {
+      "id": "refleckt",
+      "name": "Refleckt Journal",
+      "tagline": "Rust + AI Sentiment Analysis",
+      "description": "AI-powered journaling app with sentiment analysis and personalized insights. Serverless Rust backend.",
+      "relevance": ["Rust", "AI/ML", "Serverless", "Sentiment"],
+      "tech": ["Rust", "Next.js", "AWS Lambda", "OpenAI", "PostgreSQL"],
+      "url": "https://reflect.ericgitangu.com",
+      "github": "https://github.com/ericgitangu/refleckt",
+      "highlights": ["Rust serverless backend", "AI sentiment analysis", "PWA with offline", "Status dashboard"],
+      "metrics": {"type": "AI App", "backend": "Rust", "deploy": "Serverless"}
+    },
+    {
+      "id": "paygohub",
+      "name": "PayGoHub",
+      "tagline": "Solar PAYG Financing",
+      "description": "Solar pay-as-you-go platform managing customer payments, loans, and installations for energy access in Africa.",
+      "relevance": ["Fintech", "Africa", "Payments"],
+      "tech": ["ASP.NET Core", "C#", "PostgreSQL", "Redis", "Azure"],
+      "github": "https://github.com/ericgitangu/PayGoHub",
+      "highlights": ["Payment processing pipeline", "Loan management", "Installation scheduling", "Multi-market"],
+      "metrics": {"type": "Fintech", "market": "Africa", "sector": "Energy"}
+    },
+    {
+      "id": "elimuai",
+      "name": "ElimuAI",
+      "tagline": "AI Learning Platform",
+      "description": "AI-powered learning platform with ElizaOS agent orchestration and AWS serverless backend.",
+      "relevance": ["AI/ML", "Agent Orchestration", "Serverless"],
+      "tech": ["Next.js", "TypeScript", "AWS Lambda", "DynamoDB", "ElizaOS"],
+      "github": "https://github.com/ericgitangu/elimuai",
+      "highlights": ["ElizaOS agent integration", "Personalized learning paths", "Serverless architecture"],
+      "metrics": {"type": "EdTech", "ai": "ElizaOS", "deploy": "Serverless"}
+    }
+  ]
+}

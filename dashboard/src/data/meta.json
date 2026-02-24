@@ -1,0 +1,54 @@
+{
+  "app": {
+    "name": "Wave Application — Eric Gitangu",
+    "short_name": "Wave Apply",
+    "description": "Senior ML Engineer (LLM & Voice) application showcase — submission pipeline, JD alignment, Afri-Voice demo, and system architecture",
+    "url": "https://wave-apply.ericgitangu.com",
+    "theme_color": "#1a56db",
+    "background_color": "#0f172a"
+  },
+  "seo": {
+    "title": "Eric Gitangu | Wave — Senior ML Engineer (LLM & Voice)",
+    "og_description": "Application showcase: Rust+Python submission pipeline, Afri-Voice multilingual agent demo, JD alignment matrix, and support automation architecture.",
+    "keywords": ["Wave", "ML Engineer", "LLM", "Voice AI", "Eric Gitangu", "Applied AI"],
+    "author": "Eric Gitangu",
+    "twitter": "@dev_ericgitangu"
+  },
+  "splash": {
+    "headline": "Building Africa's Voice AI Future",
+    "role": "Senior Machine Learning Engineer — LLM & Voice",
+    "highlights": [
+      {
+        "icon": "brain",
+        "title": "Bridge Research & Production",
+        "description": "AI models and agent systems that ship into real products"
+      },
+      {
+        "icon": "mic",
+        "title": "Autonomous Voice & Digital Agents",
+        "description": "Powering 10M+ customer interactions per month across West Africa"
+      },
+      {
+        "icon": "globe",
+        "title": "Build for the Hardest Edge Cases",
+        "description": "Poor connectivity, low literacy, languages with little training data"
+      },
+      {
+        "icon": "rocket",
+        "title": "Own Problems End-to-End",
+        "description": "From problem discovery to running in production"
+      }
+    ],
+    "cta": "Explore Application"
+  },
+  "applicant": {
+    "name": "Eric Gitangu",
+    "email": "developer.ericgitangu@gmail.com",
+    "phone": "+254 708 078 997",
+    "location": "Nairobi, Kenya",
+    "github": "https://github.com/ericgitangu",
+    "linkedin": "https://linkedin.com/in/ericgitangu",
+    "portfolio": "https://developer.ericgitangu.com",
+    "resume": "https://resume.ericgitangu.com"
+  }
+}

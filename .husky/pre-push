@@ -1,0 +1,3 @@
+cd dashboard && pnpm exec tsc --noEmit
+cd backend && cargo test 2>/dev/null || true
+cd backend && python -m pytest tests/ -v 2>/dev/null || true

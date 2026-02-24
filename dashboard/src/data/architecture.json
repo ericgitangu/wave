@@ -1,0 +1,20 @@
+{
+  "title": "Wave Support Automation — System Design Proposal",
+  "description": "End-to-end voice agent architecture for multilingual customer support across West Africa.",
+  "diagram": "graph TB\n  subgraph Client[\"Customer Channels\"]\n    USSD[USSD *123#]\n    WhatsApp[WhatsApp]\n    IVR[IVR / Voice Call]\n    App[Wave Mobile App]\n  end\n\n  subgraph Gateway[\"API Gateway\"]\n    LB[Load Balancer]\n    Auth[Auth + Rate Limit]\n  end\n\n  subgraph Voice[\"Voice Pipeline\"]\n    ASR[ASR Engine\\nWhisper / wav2vec2]\n    NLU[NLU / Intent\\nClassification]\n    LLM[LLM Agent\\nClaude / GPT]\n    TTS[TTS Engine\\nMultilingual]\n  end\n\n  subgraph Core[\"Core Services\"]\n    Router[Intent Router]\n    Balance[Balance Service]\n    Transfer[Transfer Service]\n    Support[Support Escalation]\n    FAQ[FAQ / Knowledge Base]\n  end\n\n  subgraph Data[\"Data Layer\"]\n    PG[(PostgreSQL)]\n    Redis[(Redis Cache)]\n    S3[(S3 / Audio Storage)]\n    Vector[(Vector DB\\nEmbeddings)]\n  end\n\n  subgraph Monitoring[\"Observability\"]\n    Metrics[Prometheus + Grafana]\n    Logs[CloudWatch Logs]\n    Alerts[PagerDuty / SNS]\n  end\n\n  Client --> Gateway\n  Gateway --> Voice\n  ASR --> NLU\n  NLU --> LLM\n  LLM --> TTS\n  NLU --> Router\n  Router --> Core\n  Core --> Data\n  Voice --> Monitoring\n  Core --> Monitoring",
+  "components": [
+    {"name": "ASR Engine", "tech": "Whisper / wav2vec2", "note": "Fine-tuned for Wolof, Bambara, Fula, Swahili"},
+    {"name": "NLU / Intent Classification", "tech": "Custom classifier", "note": "Trained on Wave support intents"},
+    {"name": "LLM Agent", "tech": "Claude / GPT", "note": "RAG over Wave knowledge base, guardrails for financial ops"},
+    {"name": "TTS Engine", "tech": "Multilingual synthesis", "note": "Low-latency streaming, West African languages"},
+    {"name": "Intent Router", "tech": "Event-driven", "note": "Routes to appropriate service based on classified intent"},
+    {"name": "Vector DB", "tech": "pgvector / Pinecone", "note": "FAQ embeddings for semantic search"}
+  ],
+  "design_decisions": [
+    {"decision": "Whisper for ASR", "rationale": "Best open-source multilingual model; fine-tunable for low-resource languages"},
+    {"decision": "RAG over fine-tuning for LLM", "rationale": "Knowledge base changes frequently (policies, rates); RAG avoids retraining"},
+    {"decision": "USSD as primary channel", "rationale": "Works on feature phones, no internet required — critical for Wave's user base"},
+    {"decision": "Streaming TTS", "rationale": "Reduces perceived latency; users hear response as it generates"},
+    {"decision": "PostgreSQL + pgvector", "rationale": "Boring technology — Wave already runs Postgres; pgvector avoids a separate vector DB"}
+  ]
+}

@@ -1,0 +1,181 @@
+{
+  "name": "Eric Gitangu",
+  "email": "developer.ericgitangu@gmail.com",
+  "phone": "+254 708 078 997",
+  "location": "Nairobi, Kenya",
+  "position": "Senior Machine Learning Engineer - LLM & Voice",
+
+  "links": {
+    "linkedin": "https://linkedin.com/in/ericgitangu",
+    "github": "https://github.com/ericgitangu",
+    "portfolio": "https://developer.ericgitangu.com",
+    "resume": "https://resume.ericgitangu.com",
+    "showcase": "https://wave-apply.ericgitangu.com"
+  },
+
+  "summary": "Full-stack engineer with 10+ years experience, based in Nairobi. Director-level experience architecting multi-tenant platforms for African markets. Deep expertise in Python, event-driven systems, M-Pesa payment integrations, and AI/ML. Currently leading automation at Ignite Energy Access across Africa.",
+
+  "experience": [
+    {
+      "company": "Ignite Energy Access",
+      "title": "Team Lead",
+      "dates": "Oct 2025 - present",
+      "location": "Nairobi, Kenya",
+      "summary": "Leading automation and performance optimization for energy access infrastructure across Africa.",
+      "tech": ["Python", "Node.js", "PostgreSQL", "Redis", "Kafka", "AWS"]
+    },
+    {
+      "company": "ENGIE Energy Access",
+      "title": "Team Lead",
+      "dates": "May - Oct 2025",
+      "location": "Nairobi, Kenya",
+      "summary": "Led automation for C2B & B2B platform operations across multiple African markets.",
+      "tech": ["Python", "Ruby", "PostgreSQL", "Redis", "RabbitMQ", "Kubernetes"]
+    },
+    {
+      "company": "Vishnu Systems, Inc.",
+      "title": "Director of Engineering",
+      "dates": "Jan 2024 - Aug 2025",
+      "location": "Atlanta, GA",
+      "summary": "AI/ML security products for healthcare. Event-driven microservices with SQS/SNS and Kinesis real-time data pipelines.",
+      "tech": ["Python", "React", "Node.js", "AWS Lambda", "DynamoDB", "Kubernetes"]
+    },
+    {
+      "company": "Baw Bab Technologies",
+      "title": "Lead Software Engineer",
+      "dates": "Apr 2023 - Aug 2025",
+      "location": "Seattle, WA / Nairobi, Kenya",
+      "summary": "Digital address logistics for last-mile delivery. Kafka event streams, geo-based microservices, route optimization (Dijkstra's, A*).",
+      "tech": ["React", "Node.js", "Python", "Kafka", "Azure", "MongoDB", "Kubernetes"]
+    },
+    {
+      "company": "Reinsurance Group of America (RGA)",
+      "title": "Senior Software Engineer",
+      "dates": "Jan - Jul 2022",
+      "summary": "Modernized legacy monolith into microservices with AWS ECS.",
+      "tech": ["React", "Angular", "Node.js", "AWS ECS", "PostgreSQL"]
+    },
+    {
+      "company": "Deveric Technologies",
+      "title": "Lead Software Engineer",
+      "dates": "Jan 2019 - Feb 2022",
+      "location": "Nairobi, Kenya",
+      "summary": "Fintech and e-commerce solutions for Kenyan businesses. Payment integrations with multiple PSPs and multi-currency support.",
+      "tech": ["React", "Node.js", "MongoDB", "PostgreSQL", "Redis", "AWS", "GCP"]
+    },
+    {
+      "company": "Vecima Networks Inc.",
+      "title": "Software Engineer",
+      "dates": "Jan 2018 - Jan 2019",
+      "summary": "Telecom network management tools and OSS/BSS provisioning workflows.",
+      "tech": ["Python", "Java", "PostgreSQL", "Jenkins", "Docker"]
+    },
+    {
+      "company": "Veracode",
+      "title": "Software Engineer",
+      "dates": "Dec 2015 - Jan 2018",
+      "summary": "Security integrations for real-time vulnerability scanning. Re-architected core modules with Spring Boot.",
+      "tech": ["Java", "Spring Boot", "Python", "Docker", "Kubernetes"]
+    },
+    {
+      "company": "IBM",
+      "title": "Software Engineer (Co-op)",
+      "dates": "Sep 2013 - May 2014",
+      "summary": "WebSphere Portlet Factory test automation and build pipeline optimization."
+    }
+  ],
+
+  "skills": {
+    "languages": ["Python", "TypeScript", "Rust", "Java", "Node.js", "Go", "C#", "Kotlin"],
+    "ml_ai": ["LLMs", "RAG", "prompt engineering", "TensorFlow", "PyTorch", "GANs", "agent orchestration", "embeddings"],
+    "databases": ["PostgreSQL", "MongoDB", "DynamoDB", "Redis"],
+    "infrastructure": ["AWS", "GCP", "Kubernetes", "Docker", "Terraform", "Kafka"],
+    "frontend": ["React", "Next.js", "TypeScript", "Tailwind CSS"],
+    "architecture": ["microservices", "event-driven", "multi-tenant", "system design", "GraphQL", "REST"]
+  },
+
+  "projects": [
+    {
+      "name": "UniCorns",
+      "relevance": "Multi-tenant SaaS for African SMBs with 5 Rust microservices, M-Pesa/Airtel Money payments, Claude AI integration",
+      "url": "https://unicorns.ericgitangu.com",
+      "github": "https://github.com/ericgitangu/unicorns"
+    },
+    {
+      "name": "M-PESA Real-Time Loyalty Engine",
+      "relevance": "Event-driven architecture at mobile money scale (50M+ users). Kafka, Redis, Rust/Go microservices.",
+      "github": "https://github.com/ericgitangu/M-PESA-Real-Time-Loyalty-Engine-Architecture-Case_Study-Submission"
+    },
+    {
+      "name": "Wave Application Showcase",
+      "relevance": "This submission: Rust+PyO3 backend, Next.js PWA, Afri-Voice multilingual agent demo, JD alignment matrix",
+      "url": "https://wave-apply.ericgitangu.com"
+    },
+    {
+      "name": "Interactive Resume with AI Chatbot",
+      "relevance": "LLM integration with Anthropic SDK, RAG-powered Q&A over resume data",
+      "url": "https://resume.ericgitangu.com",
+      "github": "https://github.com/ericgitangu/resume-app"
+    },
+    {
+      "name": "Generative Adversarial Networks",
+      "relevance": "Deep learning research: GAN implementations and training pipelines",
+      "github": "https://github.com/ericgitangu/Generative-Adversarial-Networks"
+    },
+    {
+      "name": "Refleckt Journal",
+      "relevance": "Rust + AI sentiment analysis, serverless AWS backend",
+      "url": "https://reflect.ericgitangu.com",
+      "github": "https://github.com/ericgitangu/refleckt"
+    },
+    {
+      "name": "PayGoHub",
+      "relevance": "Solar pay-as-you-go financing platform across Africa",
+      "github": "https://github.com/ericgitangu/PayGoHub"
+    },
+    {
+      "name": "ElimuAI",
+      "relevance": "AI-powered learning platform with ElizaOS agent orchestration",
+      "github": "https://github.com/ericgitangu/elimuai"
+    },
+    {
+      "name": "perf-monitor-rs",
+      "relevance": "Infrastructure monitoring in Rust with Prometheus export, Kubernetes deployment",
+      "github": "https://github.com/ericgitangu/perf-monitor-rs"
+    }
+  ],
+
+  "education": {
+    "degree": "B.S. Computer Science (Minor: Mathematics)",
+    "institution": "University of Massachusetts Lowell",
+    "honors": ["Microsoft Scholarship", "Google Scholarship", "Dean's List", "ODK Honor Society"]
+  },
+
+  "certifications_count": 80,
+  "certifications_highlights": [
+    "TensorFlow Developer (DeepLearning.AI)",
+    "GANs Specialization (DeepLearning.AI)",
+    "Meta Back-End Developer",
+    "Meta React Specialization",
+    "Kubernetes: Microservices",
+    "Blockchain Specialization",
+    "Rust Specialization (Duke)",
+    "Go Programming Specialization"
+  ],
+
+  "wave_fit": {
+    "africa_based": true,
+    "years_in_africa": 7,
+    "mobile_money_experience": true,
+    "fintech_experience": true,
+    "languages": ["English", "Swahili"],
+    "public_repos": 92,
+    "key_strengths": [
+      "Built M-Pesa loyalty engine architecture at scale (50M+ users)",
+      "Multi-tenant SaaS for African SMBs with M-Pesa/Airtel Money",
+      "Leading energy access automation across Africa (Ignite/ENGIE)",
+      "AI coding agents in production workflows",
+      "Rust + Python polyglot systems engineering"
+    ]
+  }
+}

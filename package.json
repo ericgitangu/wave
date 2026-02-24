@@ -1,0 +1,21 @@
+{
+  "name": "wave",
+  "private": true,
+  "scripts": {
+    "prepare": "husky",
+    "lint": "cd dashboard && pnpm lint",
+    "typecheck": "cd dashboard && pnpm exec tsc --noEmit",
+    "test:rust": "cd backend && cargo test",
+    "test:python": "cd backend && python -m pytest tests/ -v",
+    "test": "npm run test:rust && npm run test:python"
+  },
+  "devDependencies": {
+    "husky": "^9.0.0",
+    "lint-staged": "^15.0.0"
+  },
+  "lint-staged": {
+    "dashboard/**/*.{ts,tsx}": ["pnpm --dir dashboard exec eslint --fix"],
+    "backend/src/**/*.rs": ["rustfmt"],
+    "backend/python/**/*.py": ["mypy --ignore-missing-imports"]
+  }
+}

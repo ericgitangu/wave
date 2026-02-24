@@ -1,0 +1,88 @@
+{
+  "requirements": [
+    {
+      "category": "Required",
+      "requirement": "5+ years AI/ML engineering",
+      "evidence": "10+ years full-stack, 3 years AI/ML focus (TensorFlow, PyTorch, LLMs, RAG)",
+      "strength": "strong",
+      "projects": ["Resume AI Chatbot", "ElimuAI", "Refleckt", "GANs"]
+    },
+    {
+      "category": "Required",
+      "requirement": "Strong Python + backend engineering",
+      "evidence": "10 years Python, Django, FastAPI. Led backend teams at Vishnu Systems, ENGIE, Ignite.",
+      "strength": "exceptional",
+      "projects": ["UniCorns", "PayGoHub", "M-PESA Loyalty Engine"]
+    },
+    {
+      "category": "Required",
+      "requirement": "Hands-on LLM experience (RAG, embeddings, agents, prompt engineering)",
+      "evidence": "Built RAG-powered resume chatbot with Anthropic SDK. ElimuAI with ElizaOS agent orchestration. Prompt engineering across projects.",
+      "strength": "strong",
+      "projects": ["Resume AI Chatbot", "ElimuAI", "Wave Showcase"]
+    },
+    {
+      "category": "Required",
+      "requirement": "Prototype-to-production ML track record",
+      "evidence": "Shipped AI/ML security products at Vishnu Systems (healthcare). Sentiment analysis in Refleckt. Voice demo in this showcase.",
+      "strength": "strong",
+      "projects": ["Vishnu AI/ML Scanner", "Refleckt", "Afri-Voice Demo"]
+    },
+    {
+      "category": "Required",
+      "requirement": "Fluency with AI coding agents",
+      "evidence": "This entire submission built with AI coding agents. Production workflows at Ignite using Claude Code for automation.",
+      "strength": "exceptional",
+      "projects": ["Wave Showcase", "UniCorns"]
+    },
+    {
+      "category": "Bonus",
+      "requirement": "Voice AI (ASR, TTS, latency optimization)",
+      "evidence": "Afri-Voice demo: multilingual voice agent with Web Speech API, intent classification, latency tracking.",
+      "strength": "moderate",
+      "projects": ["Afri-Voice Demo"]
+    },
+    {
+      "category": "Bonus",
+      "requirement": "Low-resource language expertise",
+      "evidence": "Native Swahili speaker. Built Afri-Voice with Swahili intent classification. 7 years building products for African markets.",
+      "strength": "strong",
+      "projects": ["Afri-Voice Demo", "BawBab"]
+    },
+    {
+      "category": "Bonus",
+      "requirement": "Customer support / conversational AI systems",
+      "evidence": "Architecture proposal for Wave support automation. Voice agent demo handling balance, send money, account queries.",
+      "strength": "moderate",
+      "projects": ["Afri-Voice Demo", "Architecture Proposal"]
+    },
+    {
+      "category": "Wave Stack",
+      "requirement": "Python 3 + mypy",
+      "evidence": "10 years Python. Type-annotated Lambda handlers in this project. mypy in CI.",
+      "strength": "exceptional",
+      "projects": ["Wave Backend", "UniCorns"]
+    },
+    {
+      "category": "Wave Stack",
+      "requirement": "TypeScript / React",
+      "evidence": "6 years TypeScript/React. This dashboard, UniCorns, resume-app, 5+ deployed Next.js apps.",
+      "strength": "exceptional",
+      "projects": ["Wave Dashboard", "UniCorns", "Resume App"]
+    },
+    {
+      "category": "Wave Stack",
+      "requirement": "PostgreSQL",
+      "evidence": "8 years PostgreSQL. Replication, sharding, high-availability across fintech and telecom.",
+      "strength": "exceptional",
+      "projects": ["ENGIE", "Deveric Technologies", "PayGoHub"]
+    },
+    {
+      "category": "Wave Stack",
+      "requirement": "Kubernetes",
+      "evidence": "5 years Kubernetes. Microservices orchestration, Helm charts, Istio service mesh.",
+      "strength": "strong",
+      "projects": ["UniCorns", "BawBab", "Veracode"]
+    }
+  ]
+}
