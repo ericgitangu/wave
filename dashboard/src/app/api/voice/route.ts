@@ -83,8 +83,13 @@ export async function POST(request: NextRequest) {
 
       if (res.ok) {
         const data = await res.json()
+        // Lambda returns classification but no agent response — resolve it here
+        const lang = (data.language === 'sw' || data.language === 'Swahili') ? 'sw' : 'en'
+        const intent = data.intent ?? 'unknown'
+        const response = data.response ?? RESPONSES[lang]?.[intent] ?? RESPONSES.en.unknown
         return NextResponse.json({
           ...data,
+          response,
           source: 'aws_lambda',
           latency_ms: Math.round(performance.now() - start),
         })
