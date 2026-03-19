@@ -1,41 +1,42 @@
-"""Lambda handler for SageMaker language detection.
+"""Lambda handler for language detection.
 
-Invokes the wave-lang-detect SageMaker endpoint running XLM-RoBERTa for
-20-language classification (including Swahili, French, Wolof, English).
+Uses the lightweight `langdetect` library for language classification.
+Supports 55 languages including Swahili, French, Wolof, English.
 Exposed via API Gateway POST /detect-language.
 
-Architecture: Rust handles request/response serialization (PyO3),
-Python handles AWS I/O (boto3).
+Replaces the previous SageMaker XLM-RoBERTa endpoint (~$86/mo) with
+an in-process library call ($0/mo within Lambda free tier).
 """
 import json
-import os
 import time
 from typing import Any
 
-import boto3
-
-from wave_backend import (
-    build_language_detection_request,
-    parse_language_detection_response,
-)
-
-SAGEMAKER_CLIENT = boto3.client("sagemaker-runtime", region_name="us-east-1")
-ENDPOINT_NAME = os.environ.get("SAGEMAKER_ENDPOINT", "wave-lang-detect")
+from langdetect import detect_langs
+from langdetect.lang_detect_exception import LangDetectException
 
 
 def detect_language(text: str) -> dict[str, Any]:
-    """Invoke SageMaker endpoint for language detection."""
-    request_body = build_language_detection_request(text)
+    """Detect language using langdetect library."""
+    try:
+        results = detect_langs(text)
+    except LangDetectException:
+        return {
+            "detected_language": "unknown",
+            "confidence": 0.0,
+            "all_predictions": [],
+        }
 
-    response = SAGEMAKER_CLIENT.invoke_endpoint(
-        EndpointName=ENDPOINT_NAME,
-        ContentType="application/json",
-        Accept="application/json",
-        Body=request_body,
-    )
+    all_predictions = [
+        {"label": r.lang, "score": round(r.prob, 4)} for r in results
+    ]
 
-    response_json = response["Body"].read().decode("utf-8")
-    return json.loads(parse_language_detection_response(response_json))
+    top = all_predictions[0] if all_predictions else {"label": "unknown", "score": 0.0}
+
+    return {
+        "detected_language": top["label"],
+        "confidence": top["score"],
+        "all_predictions": all_predictions,
+    }
 
 
 def handler(event: dict[str, Any], context: Any) -> dict[str, Any]:

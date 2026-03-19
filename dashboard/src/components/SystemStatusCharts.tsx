@@ -54,7 +54,7 @@ export default function SystemStatusCharts() {
     { name: 'Voice Pipeline', status: health.voice_api },
     { name: 'Bedrock (Claude)', status: health.bedrock_claude },
     { name: 'Bedrock (Titan)', status: health.bedrock_titan },
-    { name: 'SageMaker', status: health.sagemaker },
+    { name: 'Lang Detect', status: health.langdetect },
     { name: 'DynamoDB', status: health.submission },
   ]
 

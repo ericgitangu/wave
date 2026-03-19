@@ -5,6 +5,8 @@ All notable changes to the Wave project will be documented in this file.
 ## [0.7.0] - 2026-02-25
 
 ### Added
+- **Multilingual voice demo (10 languages)** — French, Wolof, Hausa, Yoruba, Amharic, Luganda, Portuguese, Arabic added alongside English and Swahili
+- Localized agent responses per language with market-appropriate currencies (XOF, KES, NGN, ETB, UGX, MZN, MAD)
 - **AWS Backend fully wired** — All 4 CDK stacks deployed: Submission, Voice, Bedrock, SageMaker
 - **Voice API proxied to AWS Lambda** — `/api/voice` calls API Gateway → Lambda with local keyword fallback
 - **Haptic toast notifications** — Vibration patterns per severity level (success/warning/error) on submissions and health changes

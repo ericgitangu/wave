@@ -1,7 +1,7 @@
 'use client'
 
-import { motion, AnimatePresence } from 'framer-motion'
-import { Activity, CheckCircle2, AlertTriangle, XCircle, RefreshCw, Clock, Brain, Cpu, Play, Square, Loader2 } from 'lucide-react'
+import { motion } from 'framer-motion'
+import { Activity, CheckCircle2, AlertTriangle, XCircle, RefreshCw, Clock, Brain, Cpu } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -16,7 +16,6 @@ import {
 import SystemStatusCharts from '@/components/SystemStatusCharts'
 import ProvisioningGate from '@/components/ProvisioningGate'
 import { useAppStatus } from '@/context/app-status-context'
-import { useProvisioning } from '@/context/provisioning-context'
 
 const statusIcon = (s: string) => {
   if (s === 'up' || s === 'healthy') return <CheckCircle2 className="h-5 w-5 text-emerald-500" />
@@ -34,52 +33,6 @@ const ackStatusStyle: Record<string, string> = {
   error: 'bg-red-500/20 text-red-600 dark:text-red-400',
 }
 
-function ServiceControlButton({ service, currentState }: { service: string; currentState: string }) {
-  const { transitioning, startService, stopService } = useProvisioning()
-  const transition = transitioning[service]
-
-  const isTransitioning = transition === 'starting' || transition === 'stopping'
-    || currentState === 'starting' || currentState === 'stopping'
-
-  const effectiveState = transition ?? (currentState === 'starting' || currentState === 'stopping' ? currentState : null)
-
-  return (
-    <AnimatePresence mode="wait">
-      {effectiveState === 'starting' && (
-        <motion.div key="starting" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}>
-          <Button variant="ghost" size="xs" disabled className="text-amber-500 gap-1">
-            <Loader2 className="h-3 w-3 animate-spin" />
-            Starting…
-          </Button>
-        </motion.div>
-      )}
-      {effectiveState === 'stopping' && (
-        <motion.div key="stopping" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}>
-          <Button variant="ghost" size="xs" disabled className="text-amber-500 gap-1">
-            <Loader2 className="h-3 w-3 animate-spin" />
-            Stopping…
-          </Button>
-        </motion.div>
-      )}
-      {!isTransitioning && (currentState === 'up') && (
-        <motion.div key="stop" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}>
-          <Button variant="ghost" size="xs" onClick={() => stopService(service)} className="text-red-400 hover:text-red-300 hover:bg-red-500/10 gap-1">
-            <Square className="h-3 w-3" />
-            Stop
-          </Button>
-        </motion.div>
-      )}
-      {!isTransitioning && (currentState !== 'up') && (
-        <motion.div key="start" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}>
-          <Button variant="ghost" size="xs" onClick={() => startService(service)} className="text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10 gap-1">
-            <Play className="h-3 w-3" />
-            Start
-          </Button>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  )
-}
 
 export default function StatusPage() {
   const { health, submissions, submissionCount, lastAck, isPolling, refreshNow } = useAppStatus()
@@ -89,13 +42,18 @@ export default function StatusPage() {
     <div className="mx-auto max-w-6xl space-y-6">
       <div className="flex items-start justify-between gap-4">
         <div className="space-y-2">
-          <h1 className="text-3xl font-bold tracking-tight text-foreground">System Status</h1>
+          <p className="eyebrow font-mono text-wave-cyan">Infrastructure</p>
+          <h1 className="text-3xl font-bold tracking-tight">
+            <span className="bg-gradient-to-r from-wave-cyan to-wave-accent bg-clip-text text-transparent">
+              System Status
+            </span>
+          </h1>
           <p className="text-muted-foreground">
             Real-time health, submission acknowledgements, and performance metrics.
-            {isPolling && <span className="ml-2 text-xs text-green-500">Polling every 30s</span>}
+            {isPolling && <span className="ml-2 text-xs text-wave-accent">Polling every 30s</span>}
           </p>
         </div>
-        <Button variant="outline" size="sm" onClick={refreshNow} className="shrink-0 gap-2">
+        <Button variant="outline" size="sm" onClick={refreshNow} className="shrink-0 gap-2 border-wave-cyan/20 hover:border-wave-cyan/40 hover:bg-wave-cyan/5">
           <RefreshCw className="h-3.5 w-3.5" />
           Refresh
         </Button>
@@ -157,15 +115,12 @@ export default function StatusPage() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">SageMaker</CardTitle>
-            <div className="flex items-center gap-1">
-              <ServiceControlButton service="sagemaker" currentState={health.sagemaker} />
-              <Cpu className="h-4 w-4 text-muted-foreground" />
-            </div>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Lang Detect</CardTitle>
+            <Cpu className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent className="flex items-center gap-2">
-            {statusIcon(health.sagemaker)}
-            <span className="text-lg font-semibold capitalize text-foreground">{health.sagemaker}</span>
+            {statusIcon(health.langdetect)}
+            <span className="text-lg font-semibold capitalize text-foreground">{health.langdetect}</span>
           </CardContent>
         </Card>
       </motion.div>
@@ -196,9 +151,9 @@ export default function StatusPage() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="rounded-xl border border-border bg-card"
+        className="rounded-xl border border-[var(--border)] bg-[var(--card)]/40 backdrop-blur-sm"
       >
-        <div className="border-b border-border px-4 py-3">
+        <div className="border-b border-[var(--border)] px-4 py-3">
           <h3 className="text-sm font-semibold text-foreground">Submission Acknowledgements</h3>
           <p className="text-xs text-muted-foreground">
             Tracked deliveries with timestamps and unique IDs. Personal info is optional.

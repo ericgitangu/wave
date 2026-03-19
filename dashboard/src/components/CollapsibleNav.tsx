@@ -66,14 +66,14 @@ function NavItem({
     <Link
       href={link.href}
       className={cn(
-        'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
+        'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200',
         active
-          ? 'bg-blue-600/20 text-blue-400'
-          : 'text-muted-foreground hover:bg-accent hover:text-foreground',
+          ? 'bg-wave-cyan/15 text-wave-cyan border border-wave-cyan/20'
+          : 'text-muted-foreground hover:bg-wave-cyan/5 hover:text-foreground hover:border-wave-cyan/10 border border-transparent',
         collapsed && 'justify-center px-2'
       )}
     >
-      <Icon className="h-4 w-4 shrink-0" />
+      <Icon className={cn('h-4 w-4 shrink-0', active && 'text-wave-cyan')} />
       {!collapsed && <span>{link.label}</span>}
     </Link>
   )
@@ -103,7 +103,7 @@ function NavContent({
     <div className="flex h-full flex-col">
       <div
         className={cn(
-          'flex items-center border-b border-border px-4 py-4',
+          'flex items-center border-b border-[var(--border)] px-4 py-4',
           collapsed ? 'justify-center' : 'justify-between'
         )}
       >
@@ -124,14 +124,14 @@ function NavContent({
                 exit={{ opacity: 0, width: 0 }}
                 className="overflow-hidden"
               >
-                <span className="bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-lg font-bold text-transparent">
+                <span className="bg-gradient-to-r from-wave-cyan to-wave-accent bg-clip-text text-lg font-bold text-transparent">
                   Wave
                 </span>
               </motion.div>
             )}
           </AnimatePresence>
         </div>
-        <Button variant="ghost" size="icon" onClick={onToggle}>
+        <Button variant="ghost" size="icon" onClick={onToggle} className="text-muted-foreground hover:text-wave-cyan">
           {collapsed ? (
             <ChevronsRight className="h-4 w-4" />
           ) : (
@@ -182,11 +182,11 @@ export default function CollapsibleNav() {
       <div className="fixed left-4 top-4 z-50 sm:hidden">
         <Sheet>
           <SheetTrigger asChild>
-            <Button variant="outline" size="icon">
+            <Button variant="outline" size="icon" className="border-wave-cyan/20 bg-[var(--card)]/60 backdrop-blur-md">
               <Menu className="h-4 w-4" />
             </Button>
           </SheetTrigger>
-          <SheetContent side="left" className="w-64 p-0">
+          <SheetContent side="left" className="w-64 border-r border-[var(--border)] bg-[var(--card)]/95 p-0 backdrop-blur-xl">
             <SheetHeader className="sr-only">
               <SheetTitle>Navigation</SheetTitle>
             </SheetHeader>
@@ -195,11 +195,11 @@ export default function CollapsibleNav() {
         </Sheet>
       </div>
 
-      {/* Desktop sidebar */}
+      {/* Desktop sidebar — glass morphism */}
       <motion.aside
         animate={{ width: collapsed ? 64 : 240 }}
         transition={{ duration: 0.2, ease: 'easeInOut' }}
-        className="sticky top-0 hidden h-screen shrink-0 border-r border-border bg-background sm:block"
+        className="sticky top-0 hidden h-screen shrink-0 border-r border-[var(--border)] bg-[var(--card)]/60 backdrop-blur-md sm:block"
       >
         <NavContent collapsed={collapsed} onToggle={toggle} />
       </motion.aside>

@@ -62,7 +62,7 @@ graph TB
 
 | Service | What it does | Why |
 |---------|-------------|-----|
-| Voice Lambda | Tokenizes input, detects language (Swahili/English), classifies mobile money intent (check_balance, send_money, etc.) | Core Wave feature — voice/chat classification for mobile money support |
+| Voice Lambda | Tokenizes input, detects language (10 languages: English, Swahili, French, Wolof, Hausa, Yoruba, Amharic, Luganda, Portuguese, Arabic), classifies mobile money intent (check_balance, send_money, etc.) | Core Wave feature — multilingual voice/chat classification for mobile money across West & East Africa |
 | Submission Lambda | POSTs resume JSON to Wave's API, logs to DynamoDB, publishes to EventBridge | The actual job application mechanism |
 | Bedrock Titan | Generates 256-dim embeddings for semantic search across support tickets | Search/similarity for support message routing |
 | Bedrock Claude 3.5 Haiku | Sentiment analysis (positive/negative/neutral) + complaint classification via US inference profile | Understanding customer sentiment at scale |

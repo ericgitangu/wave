@@ -152,8 +152,11 @@ export default function SubmissionsPage() {
         className="flex items-start justify-between gap-4"
       >
         <div className="space-y-2">
-          <h1 className="text-3xl font-bold tracking-tight text-foreground">
-            Submissions
+          <p className="eyebrow font-mono text-wave-cyan">API Integration</p>
+          <h1 className="text-3xl font-bold tracking-tight">
+            <span className="bg-gradient-to-r from-wave-cyan to-wave-accent bg-clip-text text-transparent">
+              Submissions
+            </span>
           </h1>
           <p className="text-muted-foreground">
             Trigger and track resume submissions to Wave&apos;s API.
@@ -198,7 +201,7 @@ export default function SubmissionsPage() {
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-2">
-              <Badge variant="secondary" className="bg-blue-500/20 text-blue-400 text-[10px]">
+              <Badge variant="secondary" className="bg-wave-cyan/20 text-wave-cyan text-[10px]">
                 POST
               </Badge>
               <code className="text-xs text-foreground truncate">{ENDPOINT}</code>
@@ -212,7 +215,7 @@ export default function SubmissionsPage() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="rounded-xl border border-border bg-card"
+        className="rounded-xl border border-[var(--border)] bg-[var(--card)]/40 backdrop-blur-sm"
       >
         <div className="border-b border-border px-4 py-3">
           <h3 className="text-sm font-semibold text-foreground">Submission History</h3>
@@ -284,7 +287,7 @@ export default function SubmissionsPage() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.15 }}
-        className="rounded-xl border border-border bg-card"
+        className="rounded-xl border border-[var(--border)] bg-[var(--card)]/40 backdrop-blur-sm"
       >
         <div className="border-b border-border px-4 py-3">
           <h3 className="text-sm font-semibold text-foreground">Manual Trigger</h3>
@@ -296,10 +299,10 @@ export default function SubmissionsPage() {
         <div className="p-4 space-y-4">
           {/* Token info */}
           <div className="flex items-center gap-3 text-xs text-muted-foreground">
-            <span className="text-blue-400 font-medium">Bearer:</span>
+            <span className="text-wave-cyan font-medium">Bearer:</span>
             <code className="font-mono">{TOKEN}</code>
             <span className="text-muted-foreground/50">|</span>
-            <span className="text-blue-400 font-medium">Format:</span>
+            <span className="text-wave-cyan font-medium">Format:</span>
             <span>wave_ + country_code + _ + id</span>
           </div>
 
@@ -354,11 +357,10 @@ export default function SubmissionsPage() {
 
           {/* Submit button */}
           <div className="flex justify-center pt-2">
-            <Button
-              size="lg"
+            <button
               onClick={handleSubmit}
               disabled={submitting}
-              className="gap-2 px-8"
+              className="btn-press glow-on-hover inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-wave-cyan to-wave-accent px-8 py-3 text-sm font-semibold text-wave-dark shadow-lg shadow-wave-cyan/25 transition-all duration-300 hover:shadow-xl hover:shadow-wave-cyan/30 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {submitting ? (
                 <>
@@ -371,7 +373,7 @@ export default function SubmissionsPage() {
                   Submit to Wave API
                 </>
               )}
-            </Button>
+            </button>
           </div>
         </div>
       </motion.div>
@@ -439,7 +441,7 @@ export default function SubmissionsPage() {
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="rounded-xl border border-border bg-card"
+          className="rounded-xl border border-[var(--border)] bg-[var(--card)]/40 backdrop-blur-sm"
         >
           <div className="border-b border-border px-4 py-3">
             <h3 className="text-sm font-semibold text-foreground">Session Trigger Log</h3>
@@ -498,7 +500,7 @@ export default function SubmissionsPage() {
         </p>
         <div className="space-y-1 font-mono text-[11px] text-muted-foreground">
           <p>
-            <span className="text-blue-400">Endpoint:</span> POST{' '}
+            <span className="text-wave-cyan">Endpoint:</span> POST{' '}
             <a
               href={ENDPOINT}
               target="_blank"
@@ -510,14 +512,14 @@ export default function SubmissionsPage() {
             </a>
           </p>
           <p>
-            <span className="text-blue-400">Bearer token:</span> wave_ +
+            <span className="text-wave-cyan">Bearer token:</span> wave_ +
             (country code) + _ + [any characters]
           </p>
           <p>
-            <span className="text-blue-400">Our token:</span> {TOKEN}
+            <span className="text-wave-cyan">Our token:</span> {TOKEN}
           </p>
           <p>
-            <span className="text-blue-400">Content-Type:</span> application/json
+            <span className="text-wave-cyan">Content-Type:</span> application/json
           </p>
         </div>
         <p className="text-[10px] text-muted-foreground/60">

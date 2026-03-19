@@ -26,7 +26,7 @@ COPY --from=builder /build/target/wheels/*.whl /tmp/
 RUN pip install /tmp/*.whl && rm -f /tmp/*.whl
 
 # Install Python dependencies
-RUN pip install boto3
+RUN pip install boto3 langdetect
 
 # Copy all Python handlers
 COPY python/ ${LAMBDA_TASK_ROOT}/

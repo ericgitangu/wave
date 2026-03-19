@@ -24,7 +24,7 @@ export default function ScrollIndicator() {
           className="flex flex-col items-center gap-2"
         >
           {/* Mouse outline */}
-          <div className="relative h-9 w-6 rounded-full border-2 border-muted-foreground/40">
+          <div className="relative h-9 w-6 rounded-full border-2 border-wave-cyan/30">
             <motion.div
               animate={{ y: [0, 8, 0] }}
               transition={{
@@ -32,7 +32,7 @@ export default function ScrollIndicator() {
                 repeat: Infinity,
                 ease: 'easeInOut',
               }}
-              className="absolute left-1/2 top-1.5 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-muted-foreground/60"
+              className="absolute left-1/2 top-1.5 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-wave-cyan/60"
             />
           </div>
           <span className="text-xs text-muted-foreground/60">

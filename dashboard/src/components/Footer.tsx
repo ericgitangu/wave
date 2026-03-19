@@ -19,25 +19,21 @@ const socials = [
     label: 'GitHub',
     href: 'https://github.com/ericgitangu',
     icon: Github,
-    color: 'hover:text-white hover:bg-white/10',
   },
   {
     label: 'LinkedIn',
     href: 'https://linkedin.com/in/ericgitangu',
     icon: Linkedin,
-    color: 'hover:text-blue-400 hover:bg-blue-400/10',
   },
   {
     label: 'Portfolio',
     href: 'https://developer.ericgitangu.com',
     icon: Globe,
-    color: 'hover:text-emerald-400 hover:bg-emerald-400/10',
   },
   {
     label: 'Interactive Resume',
     href: 'https://resume.ericgitangu.com',
     icon: FileText,
-    color: 'hover:text-purple-400 hover:bg-purple-400/10',
   },
 ]
 
@@ -50,11 +46,11 @@ const contact = [
 export default function Footer() {
   return (
     <>
-      {/* Separator — decorative gradient divider */}
+      {/* Gradient divider */}
       <div className="relative mx-auto mt-16 max-w-6xl px-6">
-        <div className="h-px w-full bg-gradient-to-r from-transparent via-blue-500/40 to-transparent" />
+        <div className="h-px w-full bg-gradient-to-r from-transparent via-wave-cyan/40 to-transparent" />
         <div className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2">
-          <div className="h-2 w-2 rotate-45 bg-blue-500/60" />
+          <div className="h-2 w-2 rotate-45 bg-wave-cyan/60" />
         </div>
       </div>
 
@@ -63,10 +59,10 @@ export default function Footer() {
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
         transition={{ duration: 0.6 }}
-        className="relative mt-0 overflow-hidden bg-gradient-to-b from-transparent via-slate-950/50 to-slate-950/80 dark:via-slate-950/50 dark:to-slate-950/80"
+        className="relative mt-0 overflow-hidden"
       >
-        {/* Subtle background pattern */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,_var(--tw-gradient-stops))] from-blue-900/5 via-transparent to-transparent" />
+        {/* Subtle radial glow */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,_var(--tw-gradient-stops))] from-wave-cyan/5 via-transparent to-transparent" />
 
         <div className="relative mx-auto max-w-6xl px-6 pb-8 pt-12">
           <div className="grid gap-10 md:grid-cols-3">
@@ -78,7 +74,7 @@ export default function Footer() {
                   alt="Eric Gitangu"
                   width={36}
                   height={36}
-                  className="h-9 w-9 rounded-lg object-cover shadow-lg shadow-blue-500/20 ring-1 ring-blue-500/30"
+                  className="h-9 w-9 rounded-lg object-cover shadow-lg shadow-wave-cyan/20 ring-1 ring-wave-cyan/30"
                 />
                 <div>
                   <p className="text-sm font-semibold text-foreground">Eric Gitangu</p>
@@ -94,17 +90,17 @@ export default function Footer() {
 
             {/* Contact column */}
             <div className="space-y-4">
-              <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              <h4 className="eyebrow font-mono text-muted-foreground">
                 Contact
               </h4>
               <div className="space-y-3">
                 {contact.map(({ icon: Icon, value, href }) => (
                   <div key={value} className="flex items-center gap-2.5">
-                    <Icon className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                    <Icon className="h-3.5 w-3.5 shrink-0 text-wave-cyan/60" />
                     {href ? (
                       <a
                         href={href}
-                        className="text-xs text-muted-foreground transition-colors hover:text-foreground"
+                        className="text-xs text-muted-foreground transition-colors hover:text-wave-cyan"
                       >
                         {value}
                       </a>
@@ -118,17 +114,17 @@ export default function Footer() {
 
             {/* Links column */}
             <div className="space-y-4">
-              <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              <h4 className="eyebrow font-mono text-muted-foreground">
                 Connect
               </h4>
               <div className="flex flex-wrap gap-2">
-                {socials.map(({ label, href, icon: Icon, color }) => (
+                {socials.map(({ label, href, icon: Icon }) => (
                   <a
                     key={label}
                     href={href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`group flex items-center gap-1.5 rounded-lg border border-border/50 px-3 py-2 text-xs text-muted-foreground transition-all ${color}`}
+                    className="group flex items-center gap-1.5 rounded-lg border border-[var(--border)] bg-[var(--card)]/30 px-3 py-2 text-xs text-muted-foreground backdrop-blur-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-wave-cyan/30 hover:text-wave-cyan hover:shadow-lg hover:shadow-wave-cyan/5"
                   >
                     <Icon className="h-3.5 w-3.5" />
                     <span>{label}</span>
@@ -140,10 +136,10 @@ export default function Footer() {
           </div>
 
           {/* Bottom bar */}
-          <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-border/30 pt-6 sm:flex-row">
+          <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-[var(--border)] pt-6 sm:flex-row">
             <p className="flex items-center gap-1 text-[11px] text-muted-foreground">
               &copy; 2006 &ndash; {new Date().getFullYear()} Eric Gitangu. Built with
-              <Heart className="inline h-3 w-3 text-red-400" />
+              <Heart className="inline h-3 w-3 text-wave-accent" />
               for Wave.
             </p>
             <div className="flex items-center gap-4 text-[11px] text-muted-foreground">
@@ -151,16 +147,16 @@ export default function Footer() {
                 href="https://developer.ericgitangu.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="transition-colors hover:text-foreground"
+                className="transition-colors hover:text-wave-cyan"
               >
                 developer.ericgitangu.com
               </a>
-              <span className="text-border">|</span>
+              <span className="text-[var(--border)]">|</span>
               <a
                 href="https://resume.ericgitangu.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="transition-colors hover:text-foreground"
+                className="transition-colors hover:text-wave-cyan"
               >
                 resume.ericgitangu.com
               </a>

@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server'
 import { LambdaClient, InvokeCommand } from '@aws-sdk/client-lambda'
-import { SageMakerClient, DescribeEndpointCommand } from '@aws-sdk/client-sagemaker'
 import {
   BedrockRuntimeClient,
   InvokeModelCommand,
@@ -9,7 +8,6 @@ import {
 const REGION = 'us-east-1'
 
 const lambdaClient = new LambdaClient({ region: REGION })
-const sagemakerClient = new SageMakerClient({ region: REGION })
 const bedrockClient = new BedrockRuntimeClient({ region: REGION })
 
 type ServiceStatus = 'up' | 'down' | 'degraded'
@@ -29,34 +27,6 @@ async function probeLambda(functionName: string): Promise<ServiceStatus> {
     if (code === 'ResourceNotFoundException') return 'degraded'
     // Credentials/permissions issues — service exists, access problem
     if (code === 'AccessDeniedException' || code === 'UnrecognizedClientException') return 'degraded'
-    return 'down'
-  }
-}
-
-async function probeSageMaker(): Promise<ServiceStatus> {
-  try {
-    const result = await sagemakerClient.send(
-      new DescribeEndpointCommand({
-        EndpointName: 'wave-lang-detect',
-      })
-    )
-    if (result.EndpointStatus === 'InService') return 'up'
-    if (result.EndpointStatus === 'Creating' || result.EndpointStatus === 'Updating')
-      return 'degraded'
-    return 'down'
-  } catch (err: unknown) {
-    const msg = (err as { message?: string })?.message ?? ''
-    const name = (err as { name?: string })?.name ?? ''
-    // Endpoint not found — check if the Lambda handler exists (endpoint is just stopped to save costs)
-    if (msg.includes('Could not find')) {
-      try {
-        await lambdaClient.send(new InvokeCommand({ FunctionName: 'wave-sagemaker-handler', InvocationType: 'DryRun' }))
-        return 'up'
-      } catch {
-        return 'degraded'
-      }
-    }
-    if (name === 'AccessDeniedException' || name === 'UnrecognizedClientException') return 'degraded'
     return 'down'
   }
 }
@@ -107,13 +77,13 @@ async function probeBedrock(modelId: string, lambdaName?: string): Promise<Servi
 }
 
 export async function GET() {
-  const [submission, voice, bedrockClaude, bedrockTitan, sagemaker] =
+  const [submission, voice, bedrockClaude, bedrockTitan, langDetect] =
     await Promise.allSettled([
       probeLambda('wave-submission-handler'),
       probeLambda('wave-voice-handler'),
       probeBedrock('us.anthropic.claude-3-5-haiku-20241022-v1:0', 'wave-bedrock-sentiment'),
       probeBedrock('amazon.titan-embed-text-v2:0'),
-      probeSageMaker(),
+      probeLambda('wave-langdetect'),
     ])
 
   const resolve = (r: PromiseSettledResult<ServiceStatus>): ServiceStatus =>
@@ -127,14 +97,14 @@ export async function GET() {
     submission: resolve(submission),
     bedrock_claude: resolve(bedrockClaude),
     bedrock_titan: resolve(bedrockTitan),
-    sagemaker: resolve(sagemaker),
+    langdetect: resolve(langDetect),
     services: {
       dashboard: 'up' as ServiceStatus,
       voice_api: resolve(voice),
       submission: resolve(submission),
       bedrock_claude: resolve(bedrockClaude),
       bedrock_titan: resolve(bedrockTitan),
-      sagemaker: resolve(sagemaker),
+      langdetect: resolve(langDetect),
     },
   })
 }

@@ -15,9 +15,16 @@ interface VoiceResult {
 }
 
 const LANG_LABELS: Record<string, { name: string; flag: string; color: string }> = {
-  fr: { name: 'French', flag: '🇫🇷', color: 'from-blue-500/20 to-indigo-500/20 border-blue-500/30' },
-  sw: { name: 'Swahili', flag: '🇰🇪', color: 'from-emerald-500/20 to-green-500/20 border-emerald-500/30' },
   en: { name: 'English', flag: '🇬🇧', color: 'from-purple-500/20 to-violet-500/20 border-purple-500/30' },
+  sw: { name: 'Swahili', flag: '🇰🇪', color: 'from-emerald-500/20 to-green-500/20 border-emerald-500/30' },
+  fr: { name: 'French', flag: '🇸🇳', color: 'from-blue-500/20 to-indigo-500/20 border-blue-500/30' },
+  wo: { name: 'Wolof', flag: '🇸🇳', color: 'from-teal-500/20 to-cyan-500/20 border-teal-500/30' },
+  ha: { name: 'Hausa', flag: '🇳🇬', color: 'from-green-500/20 to-lime-500/20 border-green-500/30' },
+  yo: { name: 'Yoruba', flag: '🇳🇬', color: 'from-yellow-500/20 to-amber-500/20 border-yellow-500/30' },
+  am: { name: 'Amharic', flag: '🇪🇹', color: 'from-red-500/20 to-rose-500/20 border-red-500/30' },
+  lg: { name: 'Luganda', flag: '🇺🇬', color: 'from-orange-500/20 to-amber-500/20 border-orange-500/30' },
+  pt: { name: 'Portuguese', flag: '🇲🇿', color: 'from-sky-500/20 to-blue-500/20 border-sky-500/30' },
+  ar: { name: 'Arabic', flag: '🇲🇦', color: 'from-pink-500/20 to-rose-500/20 border-pink-500/30' },
 }
 
 const INTENT_ICONS: Record<string, { icon: string; label: string }> = {
@@ -30,12 +37,14 @@ const INTENT_ICONS: Record<string, { icon: string; label: string }> = {
 }
 
 const EXAMPLES = [
-  { text: 'Consulter mon solde', lang: 'French', flag: '🇫🇷' },
-  { text: 'Angalia salio langu', lang: 'Swahili', flag: '🇰🇪' },
-  { text: 'Send money to John', lang: 'English', flag: '🇬🇧' },
-  { text: 'Aidez-moi', lang: 'French', flag: '🇫🇷' },
-  { text: 'Habari', lang: 'Swahili', flag: '🇰🇪' },
   { text: 'Check my balance', lang: 'English', flag: '🇬🇧' },
+  { text: 'Angalia salio langu', lang: 'Swahili', flag: '🇰🇪' },
+  { text: 'Consulter mon solde', lang: 'French', flag: '🇸🇳' },
+  { text: 'Beegam sama wàllu', lang: 'Wolof', flag: '🇸🇳' },
+  { text: 'Duba kudin na', lang: 'Hausa', flag: '🇳🇬' },
+  { text: 'Wo iye owo mi', lang: 'Yoruba', flag: '🇳🇬' },
+  { text: 'ቀሪ ሂሳብ', lang: 'Amharic', flag: '🇪🇹' },
+  { text: 'Kebera ssente zange', lang: 'Luganda', flag: '🇺🇬' },
 ]
 
 function ConfidenceBar({ value }: { value: number }) {

@@ -9,8 +9,11 @@ export default function ArchitecturePage() {
   return (
     <div className="mx-auto max-w-6xl space-y-6">
       <div className="space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight text-foreground">
-          Support Automation Architecture
+        <p className="eyebrow font-mono text-wave-cyan">System Design</p>
+        <h1 className="text-3xl font-bold tracking-tight">
+          <span className="bg-gradient-to-r from-wave-cyan to-wave-accent bg-clip-text text-transparent">
+            Support Automation Architecture
+          </span>
         </h1>
         <p className="text-muted-foreground">
           A system design proposal for end-to-end voice agent architecture powering

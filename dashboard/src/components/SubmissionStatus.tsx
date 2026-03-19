@@ -52,7 +52,7 @@ function ProgressRing({
         <motion.div
           animate={{ scale: [1, 1.08, 1], opacity: [0.5, 0.2, 0.5] }}
           transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-          className="absolute inset-0 rounded-full bg-blue-500/20"
+          className="absolute inset-0 rounded-full bg-wave-cyan/20"
         />
       )}
       <svg width={radius * 2} height={radius * 2} className="-rotate-90">
@@ -63,12 +63,12 @@ function ProgressRing({
           fill="none"
           stroke="currentColor"
           strokeWidth={stroke}
-          className="text-muted/30"
+          className="text-wave-slate/30"
         />
         <defs>
           <linearGradient id="ring-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#3b82f6" />
-            <stop offset="100%" stopColor="#6366f1" />
+            <stop offset="0%" stopColor="#00b4d8" />
+            <stop offset="100%" stopColor="#00e5a0" />
           </linearGradient>
         </defs>
         <motion.circle
@@ -134,16 +134,16 @@ export default function SubmissionStatus() {
   }))
 
   return (
-    <div className="flex flex-col items-center gap-4 rounded-xl border border-border bg-card p-6">
+    <div className="flex flex-col items-center gap-4 rounded-xl border border-[var(--border)] bg-[var(--card)]/40 p-6 backdrop-blur-sm transition-all duration-300 hover:border-wave-cyan/20 hover:shadow-lg hover:shadow-wave-cyan/5">
       <ProgressRing progress={data.progress} active={active} />
 
       <div className="text-center">
         <p
           className={cn(
             'text-sm font-semibold',
-            data.status === 'submitted' && 'text-green-400',
-            data.status === 'pending' && 'text-amber-400',
-            data.status === 'processing' && 'text-blue-400'
+            data.status === 'submitted' && 'text-wave-accent',
+            data.status === 'pending' && 'text-wave-warning',
+            data.status === 'processing' && 'text-wave-cyan'
           )}
         >
           {STATUS_LABELS[data.status]}
@@ -152,14 +152,14 @@ export default function SubmissionStatus() {
           {new Date(data.timestamp).toLocaleString()}
         </p>
         {error && (
-          <p className="mt-2 text-xs text-amber-500">{error}</p>
+          <p className="mt-2 text-xs text-wave-warning">{error}</p>
         )}
       </div>
 
-      {/* Info toggle — tap-friendly for mobile */}
+      {/* Info toggle */}
       <button
         onClick={() => setShowInfo((v) => !v)}
-        className="flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+        className="flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs text-muted-foreground transition-all duration-200 hover:bg-wave-cyan/5 hover:text-wave-cyan"
         aria-expanded={showInfo}
       >
         <Info className="h-3.5 w-3.5" />
@@ -181,22 +181,22 @@ export default function SubmissionStatus() {
             transition={{ duration: 0.2 }}
             className="w-full overflow-hidden"
           >
-            <div className="space-y-3 rounded-lg border border-border/50 bg-accent/30 p-4">
+            <div className="space-y-3 rounded-lg border border-[var(--border)] bg-[var(--card)]/30 p-4 backdrop-blur-sm">
               <p className="text-xs leading-relaxed text-muted-foreground">
                 {STATUS_DETAIL[data.status]}
               </p>
 
               {/* Pipeline steps */}
               <div className="space-y-2">
-                <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                <p className="eyebrow font-mono text-muted-foreground">
                   Submission Pipeline
                 </p>
                 {steps.map((step, i) => (
                   <div key={i} className="flex items-start gap-2">
                     {step.done ? (
-                      <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-green-400" />
+                      <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-wave-accent" />
                     ) : active ? (
-                      <Loader2 className="mt-0.5 h-3.5 w-3.5 shrink-0 animate-spin text-blue-400" />
+                      <Loader2 className="mt-0.5 h-3.5 w-3.5 shrink-0 animate-spin text-wave-cyan" />
                     ) : (
                       <Clock className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted-foreground/50" />
                     )}
@@ -212,9 +212,9 @@ export default function SubmissionStatus() {
                 ))}
               </div>
 
-              {/* Wave's exact submission instructions */}
-              <div className="space-y-2 rounded-md border border-border/40 bg-black/20 p-3">
-                <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+              {/* Wave's submission instructions */}
+              <div className="space-y-2 rounded-md border border-wave-cyan/10 bg-wave-dark/40 p-3">
+                <p className="eyebrow font-mono text-muted-foreground">
                   Wave&apos;s Submission Instructions
                 </p>
                 <p className="text-[11px] italic leading-relaxed text-muted-foreground/80">
@@ -222,10 +222,10 @@ export default function SubmissionStatus() {
                   via POST to this secure endpoint:&rdquo;
                 </p>
                 <div className="space-y-1 font-mono text-[10px] text-muted-foreground/80">
-                  <p><span className="text-blue-400">Endpoint:</span> POST https://api.wave.com/submit_resume</p>
-                  <p><span className="text-blue-400">Bearer token:</span> wave_ + (country code) + _ + [any characters]</p>
-                  <p><span className="text-blue-400">Our token:</span> wave_KE_ericgitangu</p>
-                  <p><span className="text-blue-400">Content-Type:</span> application/json</p>
+                  <p><span className="text-wave-cyan">Endpoint:</span> POST https://api.wave.com/submit_resume</p>
+                  <p><span className="text-wave-cyan">Bearer token:</span> wave_ + (country code) + _ + [any characters]</p>
+                  <p><span className="text-wave-cyan">Our token:</span> wave_KE_ericgitangu</p>
+                  <p><span className="text-wave-cyan">Content-Type:</span> application/json</p>
                 </div>
                 <p className="text-[10px] text-muted-foreground/60">
                   Payload stored for up to 30 days for review, then deleted.

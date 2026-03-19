@@ -37,7 +37,7 @@ const changelog: ChangeEntry[] = [
     items: [
       'Bedrock Claude Haiku sentiment analysis',
       'Titan Embeddings V2 semantic search',
-      'SageMaker XLM-RoBERTa 20-language detection',
+      'Serverless 55-language detection (langdetect)',
       'Docker Lambda builds with compiled Rust+PyO3',
       'Real AWS health probes on system status page',
     ],

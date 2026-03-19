@@ -1,19 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { LambdaClient, GetFunctionCommand } from '@aws-sdk/client-lambda'
 import {
-  SageMakerClient,
-  DescribeEndpointCommand,
-  CreateEndpointCommand,
-  DeleteEndpointCommand,
-} from '@aws-sdk/client-sagemaker'
-import {
   BedrockRuntimeClient,
   InvokeModelCommand,
 } from '@aws-sdk/client-bedrock-runtime'
 
 const REGION = 'us-east-1'
 const lambdaClient = new LambdaClient({ region: REGION })
-const sagemakerClient = new SageMakerClient({ region: REGION })
 const bedrockClient = new BedrockRuntimeClient({ region: REGION })
 
 type ServiceState = 'up' | 'starting' | 'stopping' | 'down' | 'not_deployed'
@@ -36,20 +29,6 @@ async function checkLambda(name: string): Promise<ServiceState> {
     const code = (err as { name?: string })?.name
     if (code === 'ResourceNotFoundException') return 'not_deployed'
     return 'down'
-  }
-}
-
-async function checkSageMaker(): Promise<ServiceState> {
-  try {
-    const res = await sagemakerClient.send(
-      new DescribeEndpointCommand({ EndpointName: 'wave-lang-detect' })
-    )
-    if (res.EndpointStatus === 'InService') return 'up'
-    if (res.EndpointStatus === 'Creating') return 'starting'
-    if (res.EndpointStatus === 'Deleting') return 'stopping'
-    return 'down'
-  } catch {
-    return 'not_deployed'
   }
 }
 
@@ -83,7 +62,7 @@ async function getStatus(): Promise<ProvisionStatus> {
     checkLambda('wave-voice-handler'),
     checkBedrock('us.anthropic.claude-3-5-haiku-20241022-v1:0'),
     checkBedrock('amazon.titan-embed-text-v2:0'),
-    checkSageMaker(),
+    checkLambda('wave-langdetect'),
   ])
 
   const resolve = (r: PromiseSettledResult<ServiceState>): ServiceState =>
@@ -94,7 +73,7 @@ async function getStatus(): Promise<ProvisionStatus> {
     { name: 'Voice Lambda', state: resolve(results[1]) },
     { name: 'Bedrock Claude', state: resolve(results[2]) },
     { name: 'Bedrock Titan', state: resolve(results[3]) },
-    { name: 'SageMaker', state: resolve(results[4]) },
+    { name: 'Lang Detect', state: resolve(results[4]) },
   ]
 
   const upCount = services.filter((s) => s.state === 'up').length
@@ -108,77 +87,18 @@ async function getStatus(): Promise<ProvisionStatus> {
   return { overall, services }
 }
 
-async function startSageMaker(): Promise<string> {
-  try {
-    const existing = await sagemakerClient.send(
-      new DescribeEndpointCommand({ EndpointName: 'wave-lang-detect' })
-    )
-    if (existing.EndpointStatus === 'InService') return 'already_running'
-    if (existing.EndpointStatus === 'Creating') return 'already_starting'
-    return 'exists_' + (existing.EndpointStatus ?? 'unknown')
-  } catch {
-    // Endpoint doesn't exist — try to create it
-    try {
-      await sagemakerClient.send(
-        new CreateEndpointCommand({
-          EndpointName: 'wave-lang-detect',
-          EndpointConfigName: 'wave-lang-detect-config',
-        })
-      )
-      return 'starting'
-    } catch (createErr: unknown) {
-      return 'error: ' + (createErr as Error)?.message?.slice(0, 100)
-    }
-  }
-}
-
-async function stopSageMaker(): Promise<string> {
-  try {
-    await sagemakerClient.send(
-      new DeleteEndpointCommand({ EndpointName: 'wave-lang-detect' })
-    )
-    return 'stopping'
-  } catch {
-    return 'not_found'
-  }
-}
-
 export async function GET() {
   const status = await getStatus()
   return NextResponse.json(status)
 }
 
 export async function POST(request: NextRequest) {
-  const { action, service } = await request.json()
-  const target = service ?? 'sagemaker'
+  const { action } = await request.json()
 
-  if (target !== 'sagemaker') {
-    return NextResponse.json(
-      { error: `Service '${target}' does not support start/stop` },
-      { status: 400 }
-    )
-  }
-
-  if (action === 'start') {
-    const sagemakerResult = await startSageMaker()
+  if (action === 'status') {
     const status = await getStatus()
-    return NextResponse.json({
-      ...status,
-      started_at: new Date().toISOString(),
-      sagemaker_action: sagemakerResult,
-    })
+    return NextResponse.json(status)
   }
 
-  if (action === 'stop') {
-    const sagemakerResult = await stopSageMaker()
-    const status = await getStatus()
-    return NextResponse.json({
-      ...status,
-      action: 'stop',
-      sagemaker: sagemakerResult,
-      timestamp: new Date().toISOString(),
-    })
-  }
-
-  return NextResponse.json({ error: 'Invalid action' }, { status: 400 })
+  return NextResponse.json({ error: 'Invalid action. Language detection is now serverless (no start/stop needed).' }, { status: 400 })
 }

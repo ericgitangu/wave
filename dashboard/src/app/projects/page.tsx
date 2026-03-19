@@ -22,8 +22,11 @@ export default function ProjectsPage() {
         transition={{ duration: 0.5 }}
         className="space-y-2"
       >
-        <h1 className="text-3xl font-bold tracking-tight text-foreground">
-          Wave-Relevant Projects
+        <p className="eyebrow font-mono text-wave-cyan">Portfolio</p>
+        <h1 className="text-3xl font-bold tracking-tight">
+          <span className="bg-gradient-to-r from-wave-cyan to-wave-accent bg-clip-text text-transparent">
+            Wave-Relevant Projects
+          </span>
         </h1>
         <p className="max-w-2xl text-muted-foreground">
           A selection of projects demonstrating ML, voice AI, mobile money, and African market expertise.
@@ -36,7 +39,7 @@ export default function ProjectsPage() {
         <span className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground/70">
           {projects.length} Projects
         </span>
-        <div className="h-px flex-1 bg-gradient-to-r from-border to-transparent" />
+        <div className="h-px flex-1 bg-gradient-to-r from-wave-cyan/30 to-transparent" />
       </div>
 
       {/* Grid */}

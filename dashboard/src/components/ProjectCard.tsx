@@ -75,9 +75,9 @@ export default function ProjectCard({ project, index = 0 }: { project: Project; 
         whileTap={{ scale: 0.98 }}
         onClick={() => setOpen(true)}
         className={cn(
-          'group relative cursor-pointer overflow-hidden rounded-2xl border border-border/50 bg-gradient-to-br p-5 shadow-sm transition-colors duration-300',
+          'group relative cursor-pointer overflow-hidden rounded-2xl border border-[var(--border)] bg-gradient-to-br p-5 shadow-sm backdrop-blur-sm transition-all duration-300',
           style.gradient,
-          'hover:border-white/10 hover:shadow-lg'
+          'hover:border-wave-cyan/20 hover:shadow-lg hover:shadow-wave-cyan/5'
         )}
       >
         {/* hover ring */}
@@ -149,7 +149,7 @@ export default function ProjectCard({ project, index = 0 }: { project: Project; 
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={(e) => e.stopPropagation()}
-                className="flex items-center gap-1 rounded-md px-2 py-1 text-[10px] font-medium text-blue-400 transition-colors hover:bg-blue-400/10"
+                className="flex items-center gap-1 rounded-md px-2 py-1 text-[10px] font-medium text-wave-cyan transition-colors hover:bg-wave-cyan/10"
               >
                 <ExternalLink className="h-3 w-3" />
                 Demo
@@ -187,7 +187,7 @@ export default function ProjectCard({ project, index = 0 }: { project: Project; 
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ type: 'spring' as const, damping: 25, stiffness: 300 }}
-              className="fixed inset-x-4 top-[8%] z-50 mx-auto max-h-[85vh] max-w-2xl overflow-y-auto rounded-2xl border border-border/60 bg-card shadow-2xl sm:inset-x-auto"
+              className="fixed inset-x-4 top-[8%] z-50 mx-auto max-h-[85vh] max-w-2xl overflow-y-auto rounded-2xl border border-[var(--border)] bg-[var(--card)]/95 shadow-2xl shadow-wave-cyan/5 backdrop-blur-xl sm:inset-x-auto"
             >
               {/* Modal gradient header */}
               <div className={cn('bg-gradient-to-br px-6 py-6', style.gradient)}>

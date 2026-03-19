@@ -24,7 +24,7 @@ interface SystemHealth {
   submission: 'up' | 'down' | 'degraded'
   bedrock_claude: 'up' | 'down' | 'degraded'
   bedrock_titan: 'up' | 'down' | 'degraded'
-  sagemaker: 'up' | 'down' | 'degraded'
+  langdetect: 'up' | 'down' | 'degraded'
   last_check: string
 }
 
@@ -43,7 +43,7 @@ const defaultHealth: SystemHealth = {
   submission: 'down',
   bedrock_claude: 'down',
   bedrock_titan: 'down',
-  sagemaker: 'down',
+  langdetect: 'down',
   last_check: new Date().toISOString(),
 }
 
@@ -67,7 +67,7 @@ export function AppStatusProvider({ children }: { children: ReactNode }) {
           submission: data.submission ?? 'down',
           bedrock_claude: data.bedrock_claude ?? 'down',
           bedrock_titan: data.bedrock_titan ?? 'down',
-          sagemaker: data.sagemaker ?? 'down',
+          langdetect: data.langdetect ?? 'down',
           last_check: new Date().toISOString(),
         })
       } else {

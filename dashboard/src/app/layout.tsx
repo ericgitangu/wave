@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next'
-import { Plus_Jakarta_Sans } from 'next/font/google'
+import { Plus_Jakarta_Sans, DM_Mono } from 'next/font/google'
 import { ThemeProvider } from 'next-themes'
 import './globals.css'
 
@@ -21,6 +21,12 @@ const jakarta = Plus_Jakarta_Sans({
   variable: '--font-jakarta',
   subsets: ['latin'],
   weight: ['400', '500', '600', '700', '800'],
+})
+
+const dmMono = DM_Mono({
+  variable: '--font-dm-mono',
+  subsets: ['latin'],
+  weight: ['300', '400'],
 })
 
 export const metadata: Metadata = {
@@ -53,8 +59,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: '(prefers-color-scheme: dark)', color: meta.app.background_color },
-    { media: '(prefers-color-scheme: light)', color: meta.app.theme_color },
+    { media: '(prefers-color-scheme: dark)', color: '#0a1628' },
+    { media: '(prefers-color-scheme: light)', color: '#f7f3ed' },
   ],
   width: 'device-width',
   initialScale: 1,
@@ -68,7 +74,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${jakarta.variable} antialiased`}
+        className={`${jakarta.variable} ${dmMono.variable} antialiased`}
       >
         <ThemeProvider
           defaultTheme="dark"
@@ -81,11 +87,11 @@ export default function RootLayout({
             <div className="flex min-h-screen">
               <CollapsibleNav />
               <div className="flex-1 flex flex-col">
-                <header className="sticky top-0 z-40 flex h-14 items-center justify-between gap-4 border-b border-border bg-background/80 px-6 backdrop-blur-sm">
+                <header className="sticky top-0 z-40 flex h-14 items-center justify-between gap-4 border-b border-border bg-[var(--card)]/60 px-6 backdrop-blur-md">
                   <GlobalSearch />
                   <ThemeToggle />
                 </header>
-                <main className="flex-1 p-6">{children}</main>
+                <main className="mesh-gradient flex-1 p-6">{children}</main>
                 <Footer />
               </div>
             </div>

@@ -9,8 +9,11 @@ export default function AlignmentPage() {
   return (
     <div className="mx-auto max-w-6xl space-y-6">
       <div className="space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight text-foreground">
-          JD Alignment Matrix
+        <p className="eyebrow font-mono text-wave-cyan">Requirements Mapping</p>
+        <h1 className="text-3xl font-bold tracking-tight">
+          <span className="bg-gradient-to-r from-wave-cyan to-wave-accent bg-clip-text text-transparent">
+            JD Alignment Matrix
+          </span>
         </h1>
         <p className="text-muted-foreground">
           Each requirement from the job description mapped to specific evidence, projects,

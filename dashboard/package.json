@@ -12,7 +12,6 @@
     "@anthropic-ai/sdk": "^0.78.0",
     "@aws-sdk/client-bedrock-runtime": "^3.996.0",
     "@aws-sdk/client-lambda": "^3.996.0",
-    "@aws-sdk/client-sagemaker": "^3.996.0",
     "@ducanh2912/next-pwa": "^10.2.9",
     "@upstash/redis": "^1.36.2",
     "class-variance-authority": "^0.7.1",

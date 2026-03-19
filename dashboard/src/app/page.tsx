@@ -4,18 +4,17 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { ArrowRight, Award, GitBranch, Globe, Timer, MapPin } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 import SplashBanner from '@/components/SplashBanner'
 import ScrollIndicator from '@/components/ScrollIndicator'
 import SubmissionStatus from '@/components/SubmissionStatus'
 import meta from '@/data/meta.json'
 
 const stats = [
-  { label: 'Years Experience', value: '10+', icon: Timer, color: '#1a56db' },
-  { label: 'Certifications', value: '80+', icon: Award, color: '#7c3aed' },
-  { label: 'Repositories', value: '92', icon: GitBranch, color: '#059669' },
-  { label: 'Years in Africa \u{1F1F0}\u{1F1EA}', value: '7', icon: Globe, color: '#d97706' },
-  { label: 'Years in the US \u{1F1FA}\u{1F1F8}', value: '13', icon: MapPin, color: '#dc2626' },
+  { label: 'Years Experience', value: '10+', icon: Timer, color: '#00b4d8' },
+  { label: 'Certifications', value: '80+', icon: Award, color: '#00e5a0' },
+  { label: 'Repositories', value: '92', icon: GitBranch, color: '#818cf8' },
+  { label: 'Years in Africa \u{1F1F0}\u{1F1EA}', value: '7', icon: Globe, color: '#fbbf24' },
+  { label: 'Years in the US \u{1F1FA}\u{1F1F8}', value: '13', icon: MapPin, color: '#fb7185' },
 ]
 
 function CircularStat({
@@ -36,9 +35,9 @@ function CircularStat({
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.5, delay }}
-      className="flex flex-col items-center gap-3"
+      className="group flex flex-col items-center gap-3"
     >
-      <div className="relative flex h-28 w-28 items-center justify-center">
+      <div className="relative flex h-28 w-28 items-center justify-center transition-transform duration-300 group-hover:-translate-y-1">
         <svg className="absolute inset-0 h-full w-full -rotate-90" viewBox="0 0 100 100">
           <circle
             cx="50"
@@ -46,8 +45,8 @@ function CircularStat({
             r="44"
             fill="none"
             stroke="currentColor"
-            strokeWidth="3"
-            className="text-border"
+            strokeWidth="2"
+            className="text-wave-slate/30"
           />
           <motion.circle
             cx="50"
@@ -55,7 +54,7 @@ function CircularStat({
             r="44"
             fill="none"
             stroke={color}
-            strokeWidth="4"
+            strokeWidth="3.5"
             strokeLinecap="round"
             strokeDasharray={`${44 * 2 * Math.PI}`}
             initial={{ strokeDashoffset: 44 * 2 * Math.PI }}
@@ -93,7 +92,7 @@ export default function HomePage() {
               transition={{ duration: 0.5, delay: 0.2 }}
               className="relative shrink-0"
             >
-              <div className="h-32 w-32 overflow-hidden rounded-full border-2 border-blue-500/30 shadow-lg shadow-blue-500/10 sm:h-36 sm:w-36">
+              <div className="h-32 w-32 overflow-hidden rounded-full border-2 border-wave-cyan/30 shadow-lg shadow-wave-cyan/20 sm:h-36 sm:w-36">
                 <Image
                   src="/eric-gitangu.jpg"
                   alt="Eric Gitangu"
@@ -103,17 +102,23 @@ export default function HomePage() {
                   priority
                 />
               </div>
+              {/* Glow ring behind avatar */}
+              <div className="absolute inset-0 -z-10 rounded-full bg-wave-cyan/10 blur-xl" />
             </motion.div>
             <div className="space-y-2 text-center sm:text-left">
-              <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-                {meta.applicant.name}
+              <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
+                <span className="bg-gradient-to-r from-wave-cyan via-wave-accent to-wave-cyan bg-clip-text text-transparent">
+                  {meta.applicant.name}
+                </span>
               </h1>
               <p className="text-xl text-muted-foreground">
                 {meta.splash.role}
               </p>
             </div>
           </div>
-          <div className="rounded-lg border border-border bg-card/50 p-6 backdrop-blur-sm">
+
+          {/* Why Eric card — glass morphism */}
+          <div className="rounded-xl border border-[var(--border)] bg-[var(--card)]/40 p-6 backdrop-blur-sm transition-all duration-300 hover:border-wave-cyan/30 hover:shadow-lg hover:shadow-wave-cyan/5">
             <h2 className="mb-3 text-lg font-semibold text-foreground">
               Why Eric for Wave
             </h2>
@@ -154,25 +159,27 @@ export default function HomePage() {
           </div>
         </motion.section>
 
-        {/* CTAs */}
+        {/* CTAs — gradient buttons with glow */}
         <motion.section
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.8 }}
           className="flex flex-wrap gap-4 pb-8"
         >
-          <Button asChild size="lg" className="gap-2">
-            <Link href="/alignment">
-              View JD Alignment
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </Button>
-          <Button asChild size="lg" variant="outline" className="gap-2">
-            <Link href="/projects">
-              Explore Projects
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </Button>
+          <Link
+            href="/alignment"
+            className="btn-press glow-on-hover inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-wave-cyan to-wave-accent px-6 py-3 text-sm font-semibold text-wave-dark shadow-lg shadow-wave-cyan/25 transition-all duration-300 hover:shadow-xl hover:shadow-wave-cyan/30"
+          >
+            View JD Alignment
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+          <Link
+            href="/projects"
+            className="btn-press inline-flex items-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--card)]/40 px-6 py-3 text-sm font-semibold text-foreground backdrop-blur-sm transition-all duration-300 hover:border-wave-cyan/30 hover:bg-wave-cyan/5 hover:shadow-lg hover:shadow-wave-cyan/5"
+          >
+            Explore Projects
+            <ArrowRight className="h-4 w-4" />
+          </Link>
         </motion.section>
       </div>
     </>
